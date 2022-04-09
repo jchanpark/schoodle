@@ -12,12 +12,15 @@ const attendeeRouter = db => {
 
   /* GET request for /events */
   router.get('/', (req, res) => {
+    // Error checking (if url passed in with status='value')
+    const status = req.query.status;
+    const err = status === 'url' ? 'Error: invalid URL' : '';
 
-    // set up middleware to check if an error occurred
-
-    // send user to event page
-    res.render("create");
+    // Send user to home page
+    const templateVars = {};
+    res.render("index", templateVars);
   });
+
 
   /* POST request for /events
      Creating a new event */
@@ -35,7 +38,7 @@ const attendeeRouter = db => {
     VALUES (
       $1, $2, $3, $5, $5, ${uid}
     ); `;
-    const queryParams = [ , , , , ];
+    const queryParams = [ , , , , ]; // to populate with request props
     console.log("Query:", query, queryParams);
 
     // query processing here
@@ -138,6 +141,7 @@ const attendeeRouter = db => {
         res.json(response.rows);
         //other data processing here
 
+        // Return to event page
         return res.redirect(`/events/${INSERT_UNIQUE_ID}`);
       })
       .catch(err => {

@@ -1,6 +1,29 @@
 // See: https://sass-lang.com/
+body{
+  color: black;
+  background-color: #FFFFFF;
+}
+body header {
+  display: flex;
+  height: 120px;
+  width: 100%;
+  background-color: #4056A1;
+  color: #FFFFFF;
+  padding: 1.5em;
+  justify-content:space-between;
+  position: fixed;
+  top: 0;
+}
 
-body,
-html {
-  margin: 0;
+
+
+body header .navRightSide {
+
+  text-align: center;
+
+}
+
+main .new-event .submitForm{
+  display: flex;
+  flex-direction: column;
 }

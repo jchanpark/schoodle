@@ -10,17 +10,26 @@ const router  = express.Router();
 
 const attendeeRouter = db => {
 
-  // GET request for /events/
+  /* GET request for /events */
   router.get('/', (req, res) => {
 
+    // set up middleware to check if an error occurred
+
+    // send user to event page
+    res.render("create");
   });
 
-  // GET request for a specific /event/:id using its unique id
-  router.get("/:id", (req, res) => {
+  /* POST request for /events
+     Creating a new event */
+  router.post('/', (req, res) => {
 
+    // Set cookie to remember who's the organizer
+
+    // Generate random string as unique id/url
+
+    // Insert new event into events table
     const query = '';
     const queryParams = [];
-
     console.log(query);
 
     // query processing here
@@ -28,8 +37,69 @@ const attendeeRouter = db => {
       .then(response => {
         res.json(response.rows);
         // other data processing here
-        // serach for event
+      })
+      .catch(err => {
+        res
+          .status(500)
+          .json({ error: err.message });
+      });
+
+  });
+
+  /* POST request for /events/edit
+     Editing an existing event */
+  router.post('/edit', (req, res) => {
+
+    // Check cookie if it's the creator
+
+  });
+
+  /* GET request for a specific /event/:id using its unique id */
+  router.get("/:id", (req, res) => {
+
+
+    // Query DB
+    const query = '';
+    const queryParams = [];
+    console.log(query);
+
+    // query processing here
+    db.query(query, queryParams)
+      .then(response => {
+        res.json(response.rows[0]);
+        // other data processing here
+        // search for event
         // if no matches, return back to /events/
+        const templateVars = {};
+        return res.render("event", templateVars);
+      })
+      .catch(err => {
+        res
+          .status(500)
+          .json({ error: err.message });
+      });
+
+    // should direct user to /events/id OR index if error
+  });
+
+  /* POST request for a specific event id to submit response */
+  router.post("/:id", (req, res) => {
+    // Check if id is in database, if not error and send back to index
+
+    // Set cookie
+
+    // Query DB
+    const query = '';
+    const queryParams = [];
+    console.log(query);
+
+    // query processing here
+    db.query(query, queryParams)
+      .then(response => {
+        res.json(response.rows);
+        // other data processing here
+
+        return res.redirect(`/events/${INSERT_UNIQUE_ID}`);
       })
       .catch(err => {
         res
@@ -39,7 +109,7 @@ const attendeeRouter = db => {
   });
 
 
-
+  /* Return router with defined routes */
   return router;
 }
 

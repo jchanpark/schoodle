@@ -52,11 +52,27 @@ const attendeeRouter = db => {
 
     // Check cookie if it's the creator
 
+    // Update event in table with new properties
+    const query = '';
+    const queryParams = [];
+    console.log(query);
+
+    // query processing here
+    db.query(query, queryParams)
+      .then(response => {
+        res.json(response.rows);
+        // other data processing here
+      })
+      .catch(err => {
+        res
+          .status(500)
+          .json({ error: err.message });
+      });
+
   });
 
   /* GET request for a specific /event/:id using its unique id */
   router.get("/:id", (req, res) => {
-
 
     // Query DB
     const query = '';
@@ -69,17 +85,18 @@ const attendeeRouter = db => {
         res.json(response.rows[0]);
         // other data processing here
         // search for event
-        // if no matches, return back to /events/
         const templateVars = {};
+        // if event found, go to event page
         return res.render("event", templateVars);
+        // if no matches, return back to /events/
+        return res.render("events", templateVars);
       })
       .catch(err => {
-        res
+        return res
           .status(500)
           .json({ error: err.message });
       });
 
-    // should direct user to /events/id OR index if error
   });
 
   /* POST request for a specific event id to submit response */

@@ -33,6 +33,23 @@ app.use(
 
 app.use(express.static("public"));
 
+// Encrypted Cookies to identify Users
+
+// Unencrypted parsers
+// const cookieParser = require('cookie-parser')
+// const bodyParser = require("body-parser");
+// app.use(bodyParser.urlencoded({extended: true}), cookieParser());
+
+// Encrypted cookie parser
+const cookieSession = require('cookie-session')
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2'],
+  secret: "correct horse battery staple",
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
+
 // Separated Routes for each Resource
 // Note: Feel free to replace the example routes below with your own
 // const usersRoutes = require("./routes/users");

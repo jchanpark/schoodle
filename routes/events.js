@@ -26,11 +26,17 @@ const attendeeRouter = db => {
     // Set cookie to remember who's the organizer
 
     // Generate random string as unique id/url
+    const uid = generateRandomString(30);
+    // check database if it's unique, regenerate if so
 
     // Insert new event into events table
-    const query = '';
-    const queryParams = [];
-    console.log(query);
+    const query = `
+    INSERT INTO events (title, description, organizer_name, organizer_email, timeslots_id, url)
+    VALUES (
+      $1, $2, $3, $5, $5, ${uid}
+    ); `;
+    const queryParams = [ , , , , ];
+    console.log("Query:", query, queryParams);
 
     // query processing here
     db.query(query, queryParams)
@@ -55,13 +61,13 @@ const attendeeRouter = db => {
     // Update event in table with new properties
     const query = '';
     const queryParams = [];
-    console.log(query);
+    console.log("Query:", query, queryParams);
 
-    // query processing here
+    //query processing here
     db.query(query, queryParams)
       .then(response => {
         res.json(response.rows);
-        // other data processing here
+        //other data processing here
       })
       .catch(err => {
         res
@@ -73,22 +79,29 @@ const attendeeRouter = db => {
 
   /* GET request for a specific /event/:id using its unique id */
   router.get("/:id", (req, res) => {
+    const uid = req.params.id;
 
     // Query DB
-    const query = '';
-    const queryParams = [];
-    console.log(query);
+    const query = `
+    SELECT * FROM events WHERE url = $1;
+    `;
+    const queryParams = [uid];
+    console.log("Query:", query, queryParams);
 
-    // query processing here
+    //query processing here
     db.query(query, queryParams)
       .then(response => {
+        // Error check if anything went wrong
+        if (!response.rows || response.rows.length !== 1) {
+          throw 'error';
+        }
+        // Process returned data from database
         res.json(response.rows[0]);
-        // other data processing here
-        // search for event
+        //other data processing here
         const templateVars = {};
-        // if event found, go to event page
-        return res.render("event", templateVars);
-        // if no matches, return back to /events/
+        //if event found, go to event page
+        return res.render(`events/${INSERT_UNIQUE_ID}`, templateVars);
+        //if no matches, return back to /events/
         return res.render("events", templateVars);
       })
       .catch(err => {
@@ -101,20 +114,29 @@ const attendeeRouter = db => {
 
   /* POST request for a specific event id to submit response */
   router.post("/:id", (req, res) => {
-    // Check if id is in database, if not error and send back to index
+    //Check if attendance_id is in database, if not error
 
-    // Set cookie
+    //Check if attendance_id matches an existing one, if so:
+      //Check if visitor_id is the same as database's visitor_id, if not error
 
-    // Query DB
+    //Set cookie if not set, otherwise existing cookie
+    const visitor_id = req.session.visitor_id;
+    if (!visitor_id) {
+      visitor_id = generateRandomString(30);
+      req.session.visitor_id = visitor_id;
+    }
+
+
+    // Query DB to submit or update attendance response
     const query = '';
     const queryParams = [];
-    console.log(query);
+    console.log("Query:", query, queryParams);
 
-    // query processing here
+    //query processing here
     db.query(query, queryParams)
       .then(response => {
         res.json(response.rows);
-        // other data processing here
+        //other data processing here
 
         return res.redirect(`/events/${INSERT_UNIQUE_ID}`);
       })
@@ -124,6 +146,11 @@ const attendeeRouter = db => {
           .json({ error: err.message });
       });
   });
+
+  // Returns a random character string with upper, lower and numeric of user-defined length
+  const generateRandomString = function(length) {
+    return Buffer.from(Math.random().toString()).toString("base64").substr(10, length);
+  }
 
 
   /* Return router with defined routes */

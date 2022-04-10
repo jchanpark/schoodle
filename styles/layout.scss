@@ -1,26 +1,23 @@
 // See: https://sass-lang.com/
-body{
-  color: black;
-  background-color: #FFFFFF;
-}
+
 body header {
   display: flex;
   height: 120px;
   width: 100%;
-  background-color: #4056A1;
-  color: #FFFFFF;
+  background-color: #38686a;
   padding: 1.5em;
   justify-content:space-between;
   position: fixed;
   top: 0;
 }
-
-
+body header .navbar-brand {
+  font-family:'Grape Nuts', cursive;
+  font-size: 2.5em;
+  color: #a1c6ea;
+}
 
 body header .navRightSide {
-
   text-align: center;
-
 }
 
 main .new-event .submitForm{

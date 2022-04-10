@@ -2,8 +2,13 @@
 <html lang="en">
 
 <head>
+  <!-- Meta Information -->
   <title>Home Page</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Font awesome Library  -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <!-- App CSS -->
   <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
   <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
   <link rel="stylesheet" href="/styles/main.css" type="text/css" />
@@ -17,6 +22,9 @@
     integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
     crossorigin="anonymous"></script>
 
+  <!-- External JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
 </head>
 
 <body>
@@ -24,7 +32,14 @@
 
 <!-- Page-specific (main) content here -->
 <main class="container">
-  <section class="new-event">
+  <section class="welcome" >
+    <h1>Welcome to Schoodle!</h1>
+    <br>
+    <p>Where all your scheduling needs are met!</p>
+    <button class="button" >Create an event</button> <!-- reload this container with the welcome class hidden and the new-event class showing -->
+  </section>
+
+  <section class="new-event" hidden="true">
     <h1>Create an Event</h1>
     <form method="POST" action="/" class="submitForm">
       <label>Title:</label>
@@ -35,6 +50,7 @@
       <textarea placeholder="Your full name" name="text" ></textarea>
       <label>Email:</label>
       <input type="email" name="email" required placeholder="Enter email" style="Width: 250px"/>
+      <button class="button" type="submit">Continue</button> <!-- Routes to GET timeslots -> carry over data from this form via cookies -->
     </form>
   </section>
   </main>

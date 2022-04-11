@@ -63,7 +63,8 @@ const createEventRouter = db => {
     VALUES (
       $1, $2, $3, $4, ${url}
     ); `;
-    const queryParams = [ 1, 2, 3, 4 ]; // to populate with request props
+    const queryParams = [ 1, 2, 3, 4 ];
+    // TODO: to populate with request props
     console.log("Query:", query, queryParams);
 
     db.query(query, queryParams)
@@ -85,12 +86,13 @@ const createEventRouter = db => {
 
     // Check cookie if it's the creator
     let user_cookie = req.session.user_id;
-    const queryCookie = `SELECT * FROM events
+    const queryCookie = `SELECT *
+    FROM users
     JOIN events ON organizer_id = users.id
     WHERE users.cookie = $1 AND events.url = $2; `;
     const paramCookie = [user_cookie, uid];
 
-    db.query(user_cookie, paramCookie)
+    db.query(queryCookie, paramCookie)
       .then(res => {
         console.log(res.rows);
         if (res.rows.length !== 1) {
@@ -111,8 +113,9 @@ const createEventRouter = db => {
         FROM timeslots JOIN events ON event_id = events.id
         WHERE events.url = $1; `;
         const queryParams = [uid, 2, 3, 4, 5];
-        console.log("Query:", queryEventUpdate, queryParams);
-        return db.query(queryEventUpdate, queryParams);
+        // TODO: to populate with request props
+        console.log("Query:", queryEventUpdate + queryTimeslotUpdate, queryParams);
+        return db.query(queryEventUpdate + queryTimeslotUpdate, queryParams);
       })
       .then(res => {
         console.log(res.rows);

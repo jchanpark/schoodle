@@ -34,11 +34,11 @@ const attendeeRouter = db => {
       .then(response => {
         // Error check if anything went wrong
         if (!response.rows || response.rows.length !== 1) {
-          throw 'error';
+          throw 'urlError';
         }
         // Process returned data from database into template variables
         const templateVars = response.rows[0];
-        templateVars[cookie] = req.session.user_id;
+        templateVars[cookie] = req.session.user_id; // include user cookie in payload
         // Go to event-specific page
         return res.render(`events`, templateVars);
       })
@@ -49,29 +49,47 @@ const attendeeRouter = db => {
 
   });
 
-  /* POST request for a specific event id to submit response */
+  /* POST request for a specific event id to submit response or edit response */
   router.post("/:id", (req, res) => {
+    const uid = req.params.id;
 
     // Get or set cookie for attendee
-    let user_id = req.session.user_id;
-    if (!user_id) {
-      user_id = generateRandomString(30);
-      req.session.user_id = user_id;
+    let user_cookie = req.session.user_id;
+    if (!user_cookie) {
+      user_cookie = generateRandomString(30);
+      req.session.user_id = user_cookie;
     }
-    //Check if attendance_id is in database, if not error
+    //Check if attendance_id is in database and user_id matches, if not error
+    const queryCookie = `SELECT *
+    FROM attendances
+      JOIN users ON attendee_id = users.id
+      JOIN events ON organizer_id = users.id
+    WHERE users.cookie = $1
+      AND attendances.id = $2
+      AND events.url = $3; `;
+    const paramCookie = [user_cookie, INSERT_ATTENDANCE_ID, uid];
 
-    //Check if attendance_id matches an existing one, if so:
-      //Check if visitor_id is the same as database's visitor_id, if not error
+    db.query(queryCookie, paramCookie)
+      .then(res => {
+        console.log(res.rows);
+        // Query DB to submit or update attendance response
+        const query = '';
+        const queryParams = [];
+
+        if (!res.rows || !res.rows.length) {  // no response found aka new attend submission
+          console.log("Query:", query, queryParams);
+          query = `
+          INSERT INTO attendances (timeslot_id, attendee_id, attend)
+          VALUES ()
+          ;`;
+
+        } else {  // repsonse found aka edit submission
+
+        }
+      })
 
 
-    // Query DB to submit or update attendance response
-    const query = `
 
-    `;
-    const queryParams = [];
-    console.log("Query:", query, queryParams);
-
-    //query processing here
     db.query(query, queryParams)
       .then(response => {
         res.json(response.rows);

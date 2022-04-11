@@ -49,7 +49,62 @@ const attendeeRouter = db => {
 
   });
 
-  /* POST request for a specific event id to submit response or edit response */
+  /* POST request for a specific event id to submit response */
+  router.post("/:id", (req, res) => {
+    const uid = req.params.id;
+
+    // Get or set cookie for attendee
+    let user_id = req.session.user_id;
+    if (!user_id) {
+      user_id = generateRandomString(30);
+      req.session.user_id = user_id;
+    }
+    //Check if attendance_id is in database and user_id matches, if not error
+    const queryCookie = `SELECT *
+    FROM attendances
+      JOIN users ON attendee_id = users.id
+      JOIN events ON organizer_id = users.id
+    WHERE users.cookie = $1
+      AND events.url = $2; `;
+    const paramCookie = [user_id, uid];
+
+    db.query(queryCookie, paramCookie)
+      .then(res => {
+        console.log(res.rows);
+        // Check if attendance already exists
+        if (!res.rows || !res.rows.length) {
+
+        }
+        // Query DB to submit or update attendance response
+        const query = '';
+        const queryParams = [];
+
+        // no response found aka new attend submission
+        console.log("Query:", query, queryParams);
+        query = `
+        INSERT INTO attendances (timeslot_id, attendee_id, attend)
+        VALUES ()
+        ;`;
+
+
+      })
+
+
+
+    db.query(query, queryParams)
+      .then(response => {
+        res.json(response.rows);
+        //other data processing here
+
+        // Return to event page
+        return res.redirect(`/events/${INSERT_UNIQUE_ID}`);
+      })
+      .catch(err => {
+        return res.redirect('../create/?urlErr=true'); // go back to index, with url error
+      });
+  });
+
+  /* POST request for a specific event id to edit response */
   router.post("/:id", (req, res) => {
     const uid = req.params.id;
 
@@ -101,7 +156,7 @@ const attendeeRouter = db => {
       .catch(err => {
         return res.redirect('../create/?urlErr=true'); // go back to index, with url error
       });
-  });
+  };
 
   // Returns a random character string with upper, lower and numeric of user-defined length
   const generateRandomString = function(length) {

@@ -34,9 +34,6 @@ app.use(
 app.use(express.static("public"));
 
 // Encrypted Cookies to identify Users
-
-// Unencrypted parsers
-
 // Encrypted cookie parser
 const cookieSession = require('cookie-session')
 app.use(cookieSession({

@@ -95,13 +95,15 @@ const createEventRouter = db => {
       })
       .catch(res => {
         console.log("Error in updating event:",err);
-        return res
-          .redirect('/?eventErr=true'); // go back to index, with event error
+        return res.redirect('/?eventErr=true'); // go back to index, with event error
       });
 
     // Update event in table with new properties
-    const query = '';
-    const queryParams = [];
+    const query = `
+    UPDATE
+    WHERE url = $2
+    `;
+    const queryParams = [ , req.params.id];
     console.log("Query:", query, queryParams);
 
     //query processing here

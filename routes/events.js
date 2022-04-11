@@ -34,18 +34,19 @@ const attendeeRouter = db => {
           throw 'error';
         }
         // Process returned data from database
-        res.json(response.rows[0]);
-        //other data processing here
-        const templateVars = {};
+        const templateVars = response.rows[0];
+        templateVars[url] = uid;
         //if event found, go to event page
-        return res.render(`events/${INSERT_UNIQUE_ID}`, templateVars);
-        //if no matches, return back to /events/
-        return res.render("events", templateVars);
+        return res.render(`events`, templateVars);
+
       })
       .catch(err => {
-        return res
-          .status(500)
-          .json({ error: err.message });
+        // return res
+        //   .status(500)
+        //   .json({ error: err.message });
+
+        //if no matches, return back to /events/
+        res.redirect('../create/?urlErr=true'); // go back to index, with url error
       });
 
   });

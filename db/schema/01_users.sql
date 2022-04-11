@@ -13,7 +13,8 @@ CREATE TABLE users (
 
 CREATE TABLE timeslots (
   id SERIAL PRIMARY KEY NOT NULL,
-  time TIMESTAMP,
+  date DATE,
+  time TIME,
   user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
 );
 

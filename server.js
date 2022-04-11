@@ -36,9 +36,6 @@ app.use(express.static("public"));
 // Encrypted Cookies to identify Users
 
 // Unencrypted parsers
-// const cookieParser = require('cookie-parser')
-// const bodyParser = require("body-parser");
-// app.use(bodyParser.urlencoded({extended: true}), cookieParser());
 
 // Encrypted cookie parser
 const cookieSession = require('cookie-session')
@@ -47,7 +44,7 @@ app.use(cookieSession({
   keys: ['key1', 'key2'],
   secret: "correct horse battery staple",
   // Cookie Options
-  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+  maxAge: 72 * 60 * 60 * 1000 // 72 hours
 }))
 
 // Separated Routes for each Resource
@@ -55,12 +52,10 @@ app.use(cookieSession({
 // const usersRoutes = require("./routes/users");
 // const widgetsRoutes = require("./routes/widgets");
 const eventRoutes = require('./routes/events.js');
+const createRoutes = require('./routes/create.js');
 
 // Mount all resource routes
-// Note: Feel free to replace the example routes below with your own
-// app.use("/api/users", usersRoutes(db));
-// app.use("/api/widgets", widgetsRoutes(db));
-// Note: mount other resources here, using the same pattern above
+app.use('/api/create', createRoutes(db));
 app.use('/api/events', eventRoutes(db));
 
 // Home page

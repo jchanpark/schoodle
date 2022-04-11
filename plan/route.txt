@@ -1,0 +1,7 @@
+GET /create - goes to home page/create
+POST /create - create new event
+POST /create/:id - update existing event
+
+GET /event - goes to home page
+GET /event/:id - goes to event details page
+POST /event/:id - submit new attendance OR upate existing attendance

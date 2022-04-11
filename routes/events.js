@@ -10,74 +10,9 @@ const router  = express.Router();
 
 const attendeeRouter = db => {
 
-  /* GET request for /events */
+  /* GET request for /event/ goes back to root*/
   router.get('/', (req, res) => {
-    // Error checking (if url passed in with status='value')
-    const status = req.query.status;
-    const err = status === 'url' ? 'Error: invalid URL' : '';
-
-    // Send user to home page
-    const templateVars = {};
-    res.render("index", templateVars);
-  });
-
-
-  /* POST request for /events
-     Creating a new event */
-  router.post('/', (req, res) => {
-
-    // Set cookie to remember who's the organizer
-
-    // Generate random string as unique id/url
-    const uid = generateRandomString(30);
-    // check database if it's unique, regenerate if so
-
-    // Insert new event into events table
-    const query = `
-    INSERT INTO events (title, description, organizer_name, organizer_email, timeslots_id, url)
-    VALUES (
-      $1, $2, $3, $5, $5, ${uid}
-    ); `;
-    const queryParams = [ , , , , ]; // to populate with request props
-    console.log("Query:", query, queryParams);
-
-    // query processing here
-    db.query(query, queryParams)
-      .then(response => {
-        res.json(response.rows);
-        // other data processing here
-      })
-      .catch(err => {
-        res
-          .status(500)
-          .json({ error: err.message });
-      });
-
-  });
-
-  /* POST request for /events/edit
-     Editing an existing event */
-  router.post('/edit', (req, res) => {
-
-    // Check cookie if it's the creator
-
-    // Update event in table with new properties
-    const query = '';
-    const queryParams = [];
-    console.log("Query:", query, queryParams);
-
-    //query processing here
-    db.query(query, queryParams)
-      .then(response => {
-        res.json(response.rows);
-        //other data processing here
-      })
-      .catch(err => {
-        res
-          .status(500)
-          .json({ error: err.message });
-      });
-
+    res.redirect('../');
   });
 
   /* GET request for a specific /event/:id using its unique id */
@@ -122,11 +57,11 @@ const attendeeRouter = db => {
     //Check if attendance_id matches an existing one, if so:
       //Check if visitor_id is the same as database's visitor_id, if not error
 
-    //Set cookie if not set, otherwise existing cookie
-    const visitor_id = req.session.visitor_id;
-    if (!visitor_id) {
-      visitor_id = generateRandomString(30);
-      req.session.visitor_id = visitor_id;
+    // Set cookie to remember who the attendee is
+    let user_id = req.session.user_id;
+    if (!user_id) {
+      user_id = generateRandomString(30);
+      req.session.user_id = user_id;
     }
 
 

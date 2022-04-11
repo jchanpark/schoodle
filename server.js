@@ -62,8 +62,9 @@ app.use('/api/events', eventRoutes(db));
 // Warning: avoid creating more routes in this file!
 // Separate them into separate routes files (see above).
 
+/* Redirect root to /create/ home page*/
 app.get("/", (req, res) => {
-  res.render("index");
+  res.redirect('/create');
 });
 
 app.listen(PORT, () => {

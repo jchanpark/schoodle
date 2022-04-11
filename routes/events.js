@@ -21,11 +21,14 @@ const attendeeRouter = db => {
 
     // Query DB
     const query = `
-    SELECT * FROM events WHERE url = $1;
+    SELECT * FROM events
+    JOIN timeslots ON event_id = events.id
+    JOIN attendances ON timeslot_id = attendances.id
+    JOIN users ON attendee_id = users.id
+    WHERE events.url = $1;
     `;
     const queryParams = [uid];
     console.log("Query:", query, queryParams);
-
     //query processing here
     db.query(query, queryParams)
       .then(response => {
@@ -33,41 +36,38 @@ const attendeeRouter = db => {
         if (!response.rows || response.rows.length !== 1) {
           throw 'error';
         }
-        // Process returned data from database
+        // Process returned data from database into template variables
         const templateVars = response.rows[0];
-        templateVars[url] = uid;
-        //if event found, go to event page
+        templateVars[cookie] = req.session.user_id;
+        // Go to event-specific page
         return res.render(`events`, templateVars);
-
       })
       .catch(err => {
-        // return res
-        //   .status(500)
-        //   .json({ error: err.message });
-
-        //if no matches, return back to /events/
-        res.redirect('../create/?urlErr=true'); // go back to index, with url error
+        // If no matches, return back to /events/ with error
+        return res.redirect('../create/?urlErr=true'); // go back to index, with url error
       });
 
   });
 
   /* POST request for a specific event id to submit response */
   router.post("/:id", (req, res) => {
-    //Check if attendance_id is in database, if not error
 
-    //Check if attendance_id matches an existing one, if so:
-      //Check if visitor_id is the same as database's visitor_id, if not error
-
-    // Set cookie to remember who the attendee is
+    // Get or set cookie for attendee
     let user_id = req.session.user_id;
     if (!user_id) {
       user_id = generateRandomString(30);
       req.session.user_id = user_id;
     }
+    //Check if attendance_id is in database, if not error
+
+    //Check if attendance_id matches an existing one, if so:
+      //Check if visitor_id is the same as database's visitor_id, if not error
 
 
     // Query DB to submit or update attendance response
-    const query = '';
+    const query = `
+
+    `;
     const queryParams = [];
     console.log("Query:", query, queryParams);
 
@@ -81,9 +81,7 @@ const attendeeRouter = db => {
         return res.redirect(`/events/${INSERT_UNIQUE_ID}`);
       })
       .catch(err => {
-        res
-          .status(500)
-          .json({ error: err.message });
+        return res.redirect('../create/?urlErr=true'); // go back to index, with url error
       });
   });
 

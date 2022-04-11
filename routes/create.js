@@ -23,9 +23,9 @@ const createEventRouter = db => {
   });
 
 
-  /* POST request for /events
+  /* POST request for /create/
      Creating a new event
-     Timeslots.html posts here */
+     index posts here */
   router.post('/', (req, res) => {
 
     // Get or set cookie to authenticate event
@@ -53,8 +53,7 @@ const createEventRouter = db => {
           }
         })
         .catch(res => {
-          return res
-            .redirect('/?eventErr=true'); // go back to index, with event error
+          return res.redirect('/?eventErr=true'); // go back to index, with event error
         });
     }
 
@@ -64,12 +63,11 @@ const createEventRouter = db => {
     VALUES (
       $1, $2, $3, $4, ${url}
     ); `;
-    const queryParams = [ , , , , ]; // to populate with request props
+    const queryParams = [ 1, 2, 3, 4 ]; // to populate with request props
     console.log("Query:", query, queryParams);
 
     db.query(query, queryParams)
       .then(response => {
-        // rs.json(response.rows);
         console.log('Event Created:', response.rows);
         return res.redirect(`/event/${url}`);
       })
@@ -80,13 +78,19 @@ const createEventRouter = db => {
 
   });
 
-  /* POST request for /:id
+  /* POST request for /creatde/:i
      Editing an existing event */
   router.post('/:id', (req, res) => {
+    const uid = req.params.id;
 
     // Check cookie if it's the creator
-    let user_id = req.session.user_id;
-    db.query('SELECT * FROM users WHERE id = $1', user_id)
+    let user_cookie = req.session.user_id;
+    const queryCookie = `SELECT * FROM events
+    JOIN events ON organizer_id = users.id
+    WHERE users.cookie = $1 AND events.url = $2; `;
+    const paramCookie = [user_cookie, uid];
+
+    db.query(user_cookie, paramCookie)
       .then(res => {
         console.log(res.rows);
         if (res.rows.length !== 1) {
@@ -96,21 +100,23 @@ const createEventRouter = db => {
       .catch(res => {
         console.log("Error in updating event:",err);
         return res.redirect('/?eventErr=true'); // go back to index, with event error
-      });
-
-    // Update event in table with new properties
-    const query = `
-    UPDATE
-    WHERE url = $2
-    `;
-    const queryParams = [ , req.params.id];
-    console.log("Query:", query, queryParams);
-
-    //query processing here
-    db.query(query, queryParams)
+      })
       .then(res => {
-        res.json(res.rows);
-        //other data processing here
+        // Update event in table with new properties
+        const queryEventUpdate = `
+        UPDATE title = $2, description = $3
+        WHERE url = $1; `;
+        const queryTimeslotUpdate = `
+        UPDATE start_time = $4, end_time = $5
+        FROM timeslots JOIN events ON event_id = events.id
+        WHERE events.url = $1; `;
+        const queryParams = [uid, 2, 3, 4, 5];
+        console.log("Query:", queryEventUpdate, queryParams);
+        return db.query(queryEventUpdate, queryParams);
+      })
+      .then(res => {
+        console.log(res.rows);
+        return res.redirect(`/event/${uid}`);
       })
       .catch(res => {
         console.log("Error in updating event",err);

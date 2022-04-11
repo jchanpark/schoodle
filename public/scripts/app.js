@@ -19,7 +19,8 @@ $("#continue-btn").on("click", function () {
 const createDateEntry = function() {
   const entry = $(`<p>Date: <input type="text" id="date" >
   Start Time: <input type="time" id="time" min="05:00" max="24:00" required>
-  End Time: <input type="time" id="time" min="05:00" max="24:00" required> </p>`);
+  End Time: <input type="time" id="time" min="05:00" max="24:00" required>
+  <button class="minus-btn" type="submit"> <i class="fa-solid fa-minus"> </i></button> </p>`);
   return entry;
 };
 

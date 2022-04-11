@@ -2,13 +2,21 @@
 <html lang="en">
 
 <head>
+  <meta charset = "utf-8">
+
   <!-- Meta Information -->
   <title>Home Page</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Font Awesome Library  -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+  <!-- External JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.12.4.js"></script>
+  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
   <!-- External CSS -->
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Grape+Nuts&family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
@@ -19,17 +27,20 @@
   <link rel="stylesheet" href="/styles/main.css" type="text/css" />
   <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
 
-  <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
-  <script type="text/javascript" src="/scripts/app.js"></script>
-
   <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
   integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
   crossorigin="anonymous"></script> -->
 
+  <!-- App js -->
+  <script type="text/javascript" src="/scripts/app.js"></script>
 
-  <!-- External JS -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-
+  <!-- Javascript -->
+  <!-- <script>
+    $(function() {
+       $( "#date" ).datepicker();
+       $( "#date" ).datepicker("show");
+    });
+ </script> -->
 </head>
 
 <body>
@@ -44,9 +55,9 @@
     <button class="button" >Create an event</button> <!-- reload this container with the welcome class hidden and the new-event class showing -->
   </section>
 
-  <section class="new-event" >
+  <form method="POST" action="/" class="submitForm">
+  <section class="new-event"hidden="true">
     <h1>Create an Event</h1>
-    <form method="POST" action="/" class="submitForm">
       <div class="form-section">
         <label>Title:</label>
         <textarea placeholder="Event Title" class="text" ></textarea>
@@ -66,12 +77,23 @@
     <div class="continue-btn">
       <button class="button" type="submit">Continue</button> <!-- Routes to GET timeslots -> carry over data from this form via cookies -->
     </div>
+  </section>
+
+    <section class="calendar">
+      <h1>Select Event dates</h1>
+      <p>Date: <input type="text" id="date" > </p>
+      <p>Time: <input type="time" id="time" min="05:00" max="24:00" required> </p>
+      <div class="add-date-btn">
+        <button class="add-btn" type="submit"> <i class="fa-solid fa-plus"> </i></button> <!-- Routes to GET timeslots -> carry over data from this form via cookies -->
+      </div>
+    </section>
+
     </form>
 
 
 
 
-  </section>
+
 </main>
 </body>
 

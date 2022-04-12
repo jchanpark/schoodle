@@ -43,6 +43,7 @@ const eventRouter = db => {
       })
       .catch(err => {
         // If no matches, return back to /event/ with error
+        console.log("Error on GET /event/:id");
         return res.redirect('../create/?urlErr=true'); // go back to index, with url error
       });
 
@@ -96,6 +97,7 @@ const eventRouter = db => {
         return res.redirect(`/event/${uid}`);
       })
       .catch(err => {
+        console.log("Error on post /event/:id INSERT");
         return res.redirect('../create/?urlErr=true'); // go back to index, with url error
       });
   });
@@ -137,13 +139,14 @@ const eventRouter = db => {
 
         return db.query("Query:", query, queryParams);
       })
-      .then(response => {
-        console.log("Update response:", response.rows);
+      .then(res => {
+        console.log("Update response:", res.rows);
 
         // Return to event page
         return res.redirect(`/event/${uid}`);
       })
       .catch(err => {
+        console.log("Error on POST /event/:id UPDATE")
         return res.redirect('../create/?urlErr=true'); // go back to index, with url error
       });
 

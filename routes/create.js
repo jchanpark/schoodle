@@ -17,7 +17,7 @@ const createRouter = db => {
     const urlErr = req.query.urlErr ? 'Error: invalid URL' : '';
     const eventErr = req.query.eventErr ? 'Error: invalid event' : '';
 
-    console.log("getting /create/", req)
+    console.log("getting /create/");
     // Send user to home page
     const templateVars = { urlErr, eventErr };
     return res.render("index", templateVars);
@@ -51,12 +51,12 @@ const createRouter = db => {
     console.log("Query:", query, queryParams);
 
     db.query(query, queryParams)
-      .then(response => {
-        console.log('Event Created:', response.rows);
+      .then(res => {
+        console.log('Event Created:', res.rows);
         return res.redirect(`/event/${url}`);
       })
       .catch(err => {
-        console.log(`Error in updating event`,err);
+        console.log(`Error in updating event`, err);
         res.redirect('/?eventErr=true'); // go back to index, with event error
       });
 
@@ -82,7 +82,7 @@ const createRouter = db => {
         }
       })
       .catch(res => {
-        console.log("Error in updating event:",err);
+        console.log("Error in updating event:", err);
         return res.redirect('/?eventErr=true'); // go back to index, with event error
       })
     // Update event in table with new properties

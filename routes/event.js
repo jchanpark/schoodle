@@ -29,7 +29,7 @@ const eventRouter = db => {
     `;
     const queryParams = [uid];
     console.log("Query:", query, queryParams);
-    //query processing here
+
     db.query(query, queryParams)
       .then(response => {
         // Error check if anything went wrong
@@ -58,42 +58,40 @@ const eventRouter = db => {
       user_id = req.body.email;
       req.session.user_id = user_id;
     }
+
     //Check if event in db
-    const queryCookie = `SELECT *
+    const queryEvent = `SELECT *
     FROM attendances
       JOIN users ON attendee_id = users.id
       JOIN timeslots ON timeslot_id = timeslots.id
       JOIN events ON event_id = events.id
     WHERE events.url = $1; `;
-    const paramCookie = [uid];
+    const paramEvent = [uid];
 
-    db.query(queryCookie, paramCookie)
+    db.query(queryEvent, paramEvent)
+      .then(res => {
+        console.log('Checking if event in db', res.rows);
+        // if no rows returned, event not in db and error
+        if (!res.rows || !res.rows.length) {
+          throw 'eventError';
+        }
+        return res;
+      })
+      .then(res => {
+        // Query DB to submit new attendance response
+        const query = `
+        INSERT INTO attendances (timeslot_id, attendee_id, attend)
+        VALUES ($1, $2, $3)
+        ;`;
+        // TODO??? may need to loop to insert multiple rows
+
+        const queryParams = [res.body.timeslot_id, res.body.attendee_id, res.body.attend];
+
+        console.log("Query:", query, queryParams);
+        return db.query(query, queryParams);
+      })
       .then(res => {
         console.log(res.rows);
-        // Check if attendance already exists
-        if (!res.rows || !res.rows.length) {
-
-        }
-
-
-      })
-
-      // Query DB to submit or update attendance response
-      const query = '';
-      const queryParams = [];
-
-    // no response found aka new attend submission
-    console.log("Query:", query, queryParams);
-    query = `
-    INSERT INTO attendances (timeslot_id, attendee_id, attend)
-    VALUES ()
-    ;`;
-
-    db.query(query, queryParams)
-      .then(response => {
-        res.json(response.rows);
-        //other data processing here
-
         // Return to event page
         return res.redirect(`/events/${INSERT_UNIQUE_ID}`);
       })

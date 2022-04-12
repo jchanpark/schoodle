@@ -39,25 +39,6 @@ const createRouter = db => {
 
     // Generate random string as unique id/url
     const url = generateRandomString(30);
-    // // Check db if string is unique; if so, regenerate
-    // const queryCheckId = `
-    // SELECT * FROM events WHERE url = ${url};
-    // `;
-    // let unique = false;
-    // while (!unique) {
-    //   db.query(queryCheckId)
-    //     .then(res => {
-    //       if (res.rows.length) { // if url already in db
-    //         url = generateRandomString(30);
-    //       } else
-    //       {
-    //         unique = true;
-    //       }
-    //     })
-    //     .catch(res => {
-    //       return res.redirect('/?eventErr=true'); // go back to index, with event error
-    //     });
-    // }
 
     // Insert new event into events table
     const query = `

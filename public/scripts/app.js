@@ -24,6 +24,40 @@ $(".add-btn").on("click", function () {
   $(".date-entry").append($entry)
 })
 
+$("#continue-btn2").on("click", function () {
+  test
+  someFunction(data)
+});
+
+// const activateCopyBtn = datetimePickerConfig => {
+//   $('form .add-btn').on('click', function () {
+//     //  Reference to how to avoid cloned calendar to execute its original calendar
+//     // https://stackoverflow.com/questions/17331137/how-can-i-get-jquery-datepicker-to-work-on-cloned-rows
+
+//     // destroy datetimepicker (IMPORTANT! this must occur before inserting the clone)
+//     $('form .datetimepickers').datetimepicker('destroy');
+
+//     cloneOptionDiv($(this));
+
+//     // configure the datetimepicker again
+//     $('.datetimepickers').datetimepicker(datetimePickerConfig);
+//   });
+// };
+
+// // delete option div when you click on the minus button
+// const activateDeleteBtn = () => {
+//   $('.minus-btn').on('click', function () {
+//     // do not allow users to remove option div if there is only one!
+//     const howManyLeft = $('.option').find('.delete').length;
+//     if (howManyLeft > 1) {
+//       const $currentOption = $(this).parents().eq(3);
+//       $currentOption.remove();
+//     }
+//   })
+// };
+
+// activateCopyBtn(dtPickerConfig);
+// activateDeleteBtn();
 
 
 
@@ -39,12 +73,7 @@ const createDateEntry = function() {
   return entry;
 };
 
-
-const data = [{
-  "email" : "test@gmail.com",
-  "name" : "Rabhas",
-  "response" : "true"
-},
+const data =[
 {
   "email" : "test2@gmail.com",
   "name" : "Rabhas2",
@@ -62,6 +91,15 @@ const createAttendeeEntry = function(data) {
   return entry;
 };
 
+//function to load single entry after user confirms attendance
+//add just a single entry to table dynamically
+const someFunction = function(dataFromForm) {
+  const $entry = createAttendeeEntry(dataFromForm);
+  $(".attendee-entry").append($entry)
+}
+
+
+//function to load all entries from db
 //hardcoded data is being fed to this function
 //data should be retrived from the dartabase as an array of objects which will dynamically populate the attendee table
 const loadEntries = function(data) {

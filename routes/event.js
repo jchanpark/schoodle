@@ -1,7 +1,7 @@
 /*
  * All routes for Events are defined here
- * Since this file is loaded in server.js into api/events,
- *   these routes are mounted onto /events
+ * Since this file is loaded in server.js into api/event,
+ *   these routes are mounted onto /event
  * See: https://expressjs.com/en/guide/using-middleware.html#middleware.router
  */
 
@@ -39,10 +39,10 @@ const eventRouter = db => {
         // Process returned data from database into template variables
         const templateVars = response.rows[0];
         // Go to event-specific page
-        return res.render('events', templateVars);
+        return res.render('event', templateVars);
       })
       .catch(err => {
-        // If no matches, return back to /events/ with error
+        // If no matches, return back to /event/ with error
         return res.redirect('../create/?urlErr=true'); // go back to index, with url error
       });
 
@@ -93,7 +93,7 @@ const eventRouter = db => {
       .then(res => {
         console.log(res.rows);
         // Return to event page
-        return res.redirect(`/events/${INSERT_UNIQUE_ID}`);
+        return res.redirect(`/event/${uid}`);
       })
       .catch(err => {
         return res.redirect('../create/?urlErr=true'); // go back to index, with url error
@@ -105,45 +105,48 @@ const eventRouter = db => {
     const uid = req.params.id;
 
     // Get or set cookie for attendee
-    let user_cookie = req.session.user_id;
-    if (!user_cookie) {
-      user_cookie = generateRandomString(30);
-      req.session.user_id = user_cookie;
+    let user_id = req.session.user_id;
+    if (!user_id) {
+      user_id = req.body.email;
+      req.session.user_id = user_id;
     }
+
     //Check if attendance_id is in database and user_id matches, if not error
-    const queryCookie = `SELECT *
+    const queryEventUser = `SELECT *
     FROM attendances
       JOIN users ON attendee_id = users.id
       JOIN timeslots ON timeslot_id = timeslots.id
       JOIN events ON event_id = events.id
     WHERE users.email = $1
-      AND attendances.id = $2
+      AND attendances.id IN $2
       AND events.url = $3; `;
-    const paramCookie = [user_cookie, INSERT_ATTENDANCE_ID, uid];
+    const paramEventUser = [user_id, INSERT_ATTENDANCE_ARRAY, uid];
+    console.log("Auth query:", queryEventUser, paramEventUser);
 
-    db.query(queryCookie, paramCookie)
+    db.query(queryEventUser, paramEventUser)
       .then(res => {
         console.log(res.rows);
 
-        // Query DB to submit or update attendance response
-        const query = '';
-        const queryParams = [];
+        // Query DB to update attendance response
+        const query = `
+        UPDATE attend = $1
+        FROM attendances
+        WHERE id = $2
+        ;`; // may need to update WHERE query
+        const queryParams = [req.body.attend, req.body.attendances.id];
 
+        return db.query("Query:", query, queryParams);
       })
-
-
-
-    db.query(query, queryParams)
       .then(response => {
-        res.json(response.rows);
-        //other data processing here
+        console.log("Update response:", response.rows);
 
         // Return to event page
-        return res.redirect(`/events/${INSERT_UNIQUE_ID}`);
+        return res.redirect(`/event/${uid}`);
       })
       .catch(err => {
         return res.redirect('../create/?urlErr=true'); // go back to index, with url error
       });
+
   });
 
   // Returns a random character string with upper, lower and numeric of user-defined length

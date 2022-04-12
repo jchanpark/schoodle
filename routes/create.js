@@ -89,6 +89,7 @@ const createRouter = db => {
       .then(res => {
         const queryEventUpdate = `
         UPDATE title = $2, description = $3
+        FROM events
         WHERE url = $1; `;
         const queryTimeslotUpdate = `
         UPDATE start_time = $4, end_time = $5

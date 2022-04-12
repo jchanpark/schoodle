@@ -58,14 +58,14 @@ const attendeeRouter = db => {
       user_id = req.body.email;
       req.session.user_id = user_id;
     }
-    //Check if attendance_id is in database and user_id matches, if not error
+    //Check if event in db
     const queryCookie = `SELECT *
     FROM attendances
       JOIN users ON attendee_id = users.id
-      JOIN events ON organizer_id = users.id
-    WHERE users.cookie = $1
-      AND events.url = $2; `;
-    const paramCookie = [user_id, uid];
+      JOIN timeslots ON timeslot_id = timeslots.id
+      JOIN events ON event_id = events.id
+    WHERE events.url = $1; `;
+    const paramCookie = [uid];
 
     db.query(queryCookie, paramCookie)
       .then(res => {
@@ -116,8 +116,9 @@ const attendeeRouter = db => {
     const queryCookie = `SELECT *
     FROM attendances
       JOIN users ON attendee_id = users.id
-      JOIN events ON organizer_id = users.id
-    WHERE users.cookie = $1
+      JOIN timeslots ON timeslot_id = timeslots.id
+      JOIN events ON event_id = events.id
+    WHERE users.email = $1
       AND attendances.id = $2
       AND events.url = $3; `;
     const paramCookie = [user_cookie, INSERT_ATTENDANCE_ID, uid];

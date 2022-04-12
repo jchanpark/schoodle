@@ -1,0 +1,5 @@
+GET home page:
+curl -i -X GET http://localhost:8080
+
+GET create event page
+curl -i -X GET http://localhost:8080/create

@@ -8,7 +8,7 @@
 const express = require('express');
 const router  = express.Router();
 
-const attendeeRouter = db => {
+const eventRouter = db => {
 
   /* GET request for /event/ goes back to root*/
   router.get('/', (req, res) => {
@@ -158,4 +158,4 @@ const attendeeRouter = db => {
   return router;
 }
 
-module.exports = attendeeRouter;
+module.exports = eventRouter;

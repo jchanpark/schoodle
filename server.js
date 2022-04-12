@@ -48,12 +48,14 @@ app.use(cookieSession({
 // Note: Feel free to replace the example routes below with your own
 // const usersRoutes = require("./routes/users");
 // const widgetsRoutes = require("./routes/widgets");
-const eventRoutes = require('./routes/events.js');
-const createRoutes = require('./routes/create.js');
+const eventRouter = require('./routes/event.js');
+const createRouter = require('./routes/create.js');
 
 // Mount all resource routes
-app.use('/api/create', createRoutes(db));
-app.use('/api/events', eventRoutes(db));
+// app.use('/api/create', createRouter(db));
+app.use('/create', createRouter(db));
+// app.use('/api/event', eventRouter(db));
+app.use('/event', eventRouter(db));
 
 // Home page
 // Warning: avoid creating more routes in this file!

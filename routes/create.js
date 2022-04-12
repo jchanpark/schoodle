@@ -8,7 +8,7 @@
 const express = require('express');
 const router  = express.Router();
 
-const createEventRouter = db => {
+const createRouter = db => {
 
   /* GET request for /create/
      Homepage including create an event form */
@@ -17,9 +17,11 @@ const createEventRouter = db => {
     const urlErr = req.query.urlErr ? 'Error: invalid URL' : '';
     const eventErr = req.query.eventErr ? 'Error: invalid event' : '';
 
+    console.log("getting /create/", req)
     // Send user to home page
     const templateVars = { urlErr, eventErr };
-    res.render("index", templateVars);
+    return res.render("index", templateVars);
+    // return res.render("../index");
   });
 
 
@@ -142,4 +144,4 @@ const createEventRouter = db => {
   return router;
 }
 
-module.exports = createEventRouter;
+module.exports = createRouter;

@@ -19,7 +19,7 @@ const attendeeRouter = db => {
   router.get("/:id", (req, res) => {
     const uid = req.params.id;
 
-    // Query DB
+    // Query DB for all information on the specified event
     const query = `
     SELECT * FROM events
     JOIN timeslots ON event_id = events.id
@@ -38,9 +38,8 @@ const attendeeRouter = db => {
         }
         // Process returned data from database into template variables
         const templateVars = response.rows[0];
-        templateVars[cookie] = req.session.user_id; // include user cookie in payload
         // Go to event-specific page
-        return res.render(`events`, templateVars);
+        return res.render('events', templateVars);
       })
       .catch(err => {
         // If no matches, return back to /events/ with error
@@ -56,7 +55,7 @@ const attendeeRouter = db => {
     // Get or set cookie for attendee
     let user_id = req.session.user_id;
     if (!user_id) {
-      user_id = generateRandomString(30);
+      user_id = req.body.email;
       req.session.user_id = user_id;
     }
     //Check if attendance_id is in database and user_id matches, if not error
@@ -146,7 +145,7 @@ const attendeeRouter = db => {
       .catch(err => {
         return res.redirect('../create/?urlErr=true'); // go back to index, with url error
       });
-  };
+  });
 
   // Returns a random character string with upper, lower and numeric of user-defined length
   const generateRandomString = function(length) {

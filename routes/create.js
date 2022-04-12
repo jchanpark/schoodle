@@ -45,7 +45,12 @@ const createRouter = db => {
     VALUES (
       $1, $2, $3, $4, ${url}
     ); `;
-    const queryParams = [ 1, 2, 3, 4 ];
+    const queryParams = [
+      req.body.title,
+      req.body.description,
+      req.body.user_id,
+      req.body.timeslots_id
+    ];
     // TODO: to populate with request props
     console.log("Query:", query, queryParams);
 

@@ -1,54 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset = "utf-8">
-
-  <!-- Meta Information -->
-  <title>Home Page</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <!-- Font Awesome Library  -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
-  <!-- External JS -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="//code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-
-  <!-- External CSS -->
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Grape+Nuts&family=Quicksand:wght@300;400;500&display=swap" rel="stylesheet">
-
-  <!-- App CSS -->
-  <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
-  <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
-  <link rel="stylesheet" href="/styles/main.css" type="text/css" />
-  <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
-
-  <!-- <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-  integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-  crossorigin="anonymous"></script> -->
-
-  <!-- App js -->
-  <script type="text/javascript" src="/scripts/app.js"></script>
-
-  <!-- Javascript -->
-  <!-- <script>
-    $(function() {
-       $( "#date" ).datepicker();
-       $( "#date" ).datepicker("show");
-    });
- </script> -->
+  <!-- Include all external dependencies  -->
+ <%- include('partials/_header') %>
 </head>
 
 <body>
-  <%- include('partials/_header') %>
+  <%- include('partials/_nav') %>
 
 <!-- Page-specific (main) content here -->
 <main class="container">
-  <section class="welcome">
+
+  <section class="welcome"hidden="true">
     <h1>Welcome to Schoodle!</h1>
 
     <h2>Where all your scheduling needs are met</h2>
@@ -81,9 +44,10 @@
     <section class="calendar" hidden="true">
       <h1>Select Event dates</h1>
       <div class="date-entry">
-        <p>Date: <input type="text" id="date" >
+        <p>Date: <input type="text" class="date" >
           Start Time: <input type="time" id="time" min="05:00" max="24:00" required>
-          End Time: <input type="time" id="time" min="05:00" max="24:00" required> </p>
+          End Time: <input type="time" id="time" min="05:00" max="24:00" required>
+          <button class="minus-btn" type="submit"> <i class="fa-solid fa-minus"> </i></button> </p>
       </div>
       <div class="add-date-btn">
         <button class="add-btn" type="submit"> <i class="fa-solid fa-plus"> </i></button> <!-- Routes to GET timeslots -> carry over data from this form via cookies -->
@@ -95,11 +59,8 @@
 
     </form>
 
-
-
-
-
-</main>
+  </main>
+  </div>
 </body>
 
 </html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <title>Share your event</title>
+
+  <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
+  <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/main.css" type="text/css" />
+  <link rel="stylesheet" href="/styles/layout.css" type="text/css" />
+
+  <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
+  <script type="text/javascript" src="/scripts/app.js"></script>
+
+  </head>
+
+<body>
+  <form method="POST" action="/:id" class="submitForm">
+    <section class="new-event">
+      <h1>Confirm your attendence</h1>
+        <div class="form-section">
+          <label>Name:</label>
+          <textarea  placeholder="Your full name" class="text" ></textarea>
+        </div>
+        <div class="form-section">
+          <label>Email:</label>
+          <input  type="email" class="text" required placeholder="Enter email" style="Width: 250px"/>
+      </div>
+      <div class="form-section">
+        <label>I will be attending <input  type="checkbox" class="text" id="checkbox" style="Width: 250px"/> </label>
+    </div>
+      <div class="continue-btn">
+        <button class="button" type="submit" id="continue-btn2" >Continue</button>
+         <!-- Routes to GET timeslots -> carry over data from this form via cookies -->
+      </div>
+    </section>
+    </form>
+  <h2 class="event-name">Event Name Table</h2>
+  <div class="table-wrapper">
+      <table class="fl-table">
+          <thead>
+          <tr>
+              <th>Email</th>
+              <th>Name</th>
+              <th>Response</th>
+
+          </tr>
+          </thead>
+          <tbody class="attendee-entry" >
+          <tbody>
+      </table>
+  </div>
+
+</body>
+
+</html>

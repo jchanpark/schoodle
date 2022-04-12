@@ -31,31 +31,31 @@ const createEventRouter = db => {
     // Get or set cookie to authenticate event
     let user_id = req.session.user_id;
     if (!user_id) {
-      user_id = generateRandomString(30);
+      user_id = req.body.email;
       req.session.user_id = user_id;
     }
 
     // Generate random string as unique id/url
     const url = generateRandomString(30);
-    // Check db if string is unique; if so, regenerate
-    const queryCheckId = `
-    SELECT * FROM events WHERE url = ${url};
-    `;
-    let unique = false;
-    while (!unique) {
-      db.query(queryCheckId)
-        .then(res => {
-          if (res.rows.length) { // if url already in db
-            url = generateRandomString(30);
-          } else
-          {
-            unique = true;
-          }
-        })
-        .catch(res => {
-          return res.redirect('/?eventErr=true'); // go back to index, with event error
-        });
-    }
+    // // Check db if string is unique; if so, regenerate
+    // const queryCheckId = `
+    // SELECT * FROM events WHERE url = ${url};
+    // `;
+    // let unique = false;
+    // while (!unique) {
+    //   db.query(queryCheckId)
+    //     .then(res => {
+    //       if (res.rows.length) { // if url already in db
+    //         url = generateRandomString(30);
+    //       } else
+    //       {
+    //         unique = true;
+    //       }
+    //     })
+    //     .catch(res => {
+    //       return res.redirect('/?eventErr=true'); // go back to index, with event error
+    //     });
+    // }
 
     // Insert new event into events table
     const query = `
@@ -85,13 +85,12 @@ const createEventRouter = db => {
     const uid = req.params.id;
 
     // Check cookie if it's the creator
-    let user_cookie = req.session.user_id;
+    let user_id = req.session.user_id;
     const queryCookie = `SELECT *
     FROM users
     JOIN events ON organizer_id = users.id
-    WHERE users.cookie = $1 AND events.url = $2; `;
-    const paramCookie = [user_cookie, uid];
-
+    WHERE users.email = $1 AND events.url = $2; `;
+    const paramCookie = [user_id, uid];
     db.query(queryCookie, paramCookie)
       .then(res => {
         console.log(res.rows);
@@ -103,8 +102,8 @@ const createEventRouter = db => {
         console.log("Error in updating event:",err);
         return res.redirect('/?eventErr=true'); // go back to index, with event error
       })
+    // Update event in table with new properties
       .then(res => {
-        // Update event in table with new properties
         const queryEventUpdate = `
         UPDATE title = $2, description = $3
         WHERE url = $1; `;
@@ -112,14 +111,19 @@ const createEventRouter = db => {
         UPDATE start_time = $4, end_time = $5
         FROM timeslots JOIN events ON event_id = events.id
         WHERE events.url = $1; `;
-        const queryParams = [uid, 2, 3, 4, 5];
-        // TODO: to populate with request props
+        // Populate with info from HTML form
+        const queryParams = [uid,
+          req.body.title,
+          req.body.description,
+          req.body.start_time,
+          req.body.end_time
+        ];
         console.log("Query:", queryEventUpdate + queryTimeslotUpdate, queryParams);
         return db.query(queryEventUpdate + queryTimeslotUpdate, queryParams);
       })
       .then(res => {
         console.log(res.rows);
-        return res.redirect(`/event/${uid}`);
+        return res.redirect(`/event/${uid}`); // redirect to specific event URL if successful
       })
       .catch(res => {
         console.log("Error in updating event",err);

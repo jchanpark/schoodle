@@ -21,29 +21,32 @@ const eventRouter = db => {
 
     // Query DB for all information on the specified event
     const query = `
-    SELECT * FROM events
-    JOIN timeslots ON event_id = events.id
-    JOIN attendances ON timeslot_id = attendances.id
+    SELECT *
+    FROM attendances
+    JOIN timeslots ON timeslot_id = timeslots.id
     JOIN users ON attendee_id = users.id
-    WHERE events.url = $1;
+    JOIN events ON event_id = events.id
+    WHERE url = $1
     `;
+
     const queryParams = [uid];
     console.log("Query:", query, queryParams);
 
     db.query(query, queryParams)
-      .then(res => {
-        console.log("GET result:".res.rows);
+      .then(result => {
+        console.log("GET result:",result.rows);
         // Error check if anything went wrong
-        if (!res.rows || res.rows.length !== 1) {
+        if (!result.rows.length) {
           throw 'urlError';
         }
         // Process returned data from database into template variables
-        const templateVars = res.rows[0];
+        const templateVars = result.rows[0];
         // Go to event-specific page
-        return res.render('event', templateVars);
+        return res.render('events', templateVars);
       })
       .catch(err => {
         // If no matches, return back to /event/ with error
+        console.log(err.message);
         console.log("Error on GET /event/:id");
         return res.redirect('../create/?urlErr=true'); // go back to index, with url error
       });
@@ -88,7 +91,11 @@ const eventRouter = db => {
         ;`;
         // TODO??? may need to loop to insert multiple rows
 
-        const queryParams = [res.body.timeslot_id, res.body.attendee_id, res.body.attend];
+        const queryParams = [
+          res.body.timeslot_id,
+          res.body.attendee_id,
+          res.body.attend
+        ];
 
         console.log("Query:", query, queryParams);
         return db.query(query, queryParams);

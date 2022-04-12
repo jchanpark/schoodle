@@ -10,34 +10,33 @@
 
 <!-- Page-specific (main) content here -->
 <main class="container">
-  <%- include('events') %>
-  <section class="welcome" hidden="true" >
+  <section class="welcome" >
     <h1>Welcome to Schoodle!</h1>
 
     <h2>Where all your scheduling needs are met</h2>
   </section>
 
-  <form method="POST" action="/create" class="submitForm">
+  <form method="POST" action="/" class="submitForm">
   <section class="new-event" hidden="true">
     <h1>Create an Event</h1>
       <div class="form-section">
         <label>Title:</label>
-        <textarea placeholder="Event Title" class="text" ></textarea>
+        <textarea placeholder="Event Title" class="text" id="title"></textarea>
       </div>
       <div class="form-section">
         <label>Description:</label>
-        <textarea placeholder="Write a short description" class="text" ></textarea>
+        <textarea placeholder="Write a short description" class="text" id="description"></textarea>
     </div>
     <div class="form-section">
       <label>Name:</label>
-      <textarea  placeholder="Your full name" class="text" ></textarea>
+      <textarea placeholder="Your full name" class="text" id="name"></textarea>
     </div>
     <div class="form-section">
       <label>Email:</label>
-      <input  type="email" class="text" required placeholder="Enter email" style="Width: 250px"/>
+      <input type="email" id="email" class="text" required placeholder="Enter email" style="Width: 250px"/>
     </div>
     <div class="continue-btn">
-      <button class="button" id="continue-btn" >Continue</button>
+      <button class="button" type="button" id="continue-btn" >Continue</button>
        <!-- Routes to GET timeslots -> carry over data from this form via cookies -->
     </div>
   </section>
@@ -48,10 +47,10 @@
         <p>Date: <input type="text" class="date" >
           Start Time: <input type="time" id="time" required>
           End Time: <input type="time" id="time"  required>
-          <button class="minus-btn" ><i class="fa-solid fa-minus"> </i></button> </p>
+          <button class="minus-btn" type="button" ><i class="fa-solid fa-minus"> </i></button> </p>
       </div>
       <div class="add-date-btn">
-        <button class="add-btn" ><i class="fa-solid fa-plus"> </i></button>
+        <button class="add-btn" type="button" ><i class="fa-solid fa-plus"> </i></button>
         <!-- Routes to GET timeslots -> carry over data from this form via cookies -->
       </div>
       <div class="complete-btn">

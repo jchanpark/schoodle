@@ -1,9 +1,6 @@
 // Client facing scripts here
 $(document).ready(function() {
-$(function(){
   $(".date").datepicker();
-  // $("#date").datepicker("show");
-})
 
 //nav bar create event button
 $(".nav-create-event").on("click", function () {
@@ -14,14 +11,24 @@ $(".nav-create-event").on("click", function () {
 
 //continue button on the create event page
 $("#continue-btn").on("click", function () {
-  $(".welcome").hide();
-  $(".calendar").show();
+  let title = $('#title').val().length;
+  let description = $('#description').val().length;
+  let name = $('#name').val().length;
+  let email = $('#email').val().length;
+  if (title === 0 || description === 0 || name === 0 || email === 0) {
+    alert("Please fill all the fields before continuing");
+  }
+  else{
+    $(".welcome").hide();
+    $(".calendar").show();
+  }
 })
 
 //
 $(".add-btn").on("click", function () {
   const $entry = createDateEntry();
   $(".date-entry").append($entry)
+  $(".date").datepicker();
 })
 
 $("#continue-btn2").on("click", function () {

@@ -75,21 +75,20 @@ const attendeeRouter = db => {
         if (!res.rows || !res.rows.length) {
 
         }
-        // Query DB to submit or update attendance response
-        const query = '';
-        const queryParams = [];
-
-        // no response found aka new attend submission
-        console.log("Query:", query, queryParams);
-        query = `
-        INSERT INTO attendances (timeslot_id, attendee_id, attend)
-        VALUES ()
-        ;`;
 
 
       })
 
+      // Query DB to submit or update attendance response
+      const query = '';
+      const queryParams = [];
 
+    // no response found aka new attend submission
+    console.log("Query:", query, queryParams);
+    query = `
+    INSERT INTO attendances (timeslot_id, attendee_id, attend)
+    VALUES ()
+    ;`;
 
     db.query(query, queryParams)
       .then(response => {
@@ -127,20 +126,11 @@ const attendeeRouter = db => {
     db.query(queryCookie, paramCookie)
       .then(res => {
         console.log(res.rows);
+
         // Query DB to submit or update attendance response
         const query = '';
         const queryParams = [];
 
-        if (!res.rows || !res.rows.length) {  // no response found aka new attend submission
-          console.log("Query:", query, queryParams);
-          query = `
-          INSERT INTO attendances (timeslot_id, attendee_id, attend)
-          VALUES ()
-          ;`;
-
-        } else {  // repsonse found aka edit submission
-
-        }
       })
 
 

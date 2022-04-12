@@ -17,11 +17,10 @@ const createRouter = db => {
     const urlErr = req.query.urlErr ? 'Error: invalid URL' : '';
     const eventErr = req.query.eventErr ? 'Error: invalid event' : '';
 
-    console.log("getting /create/");
+    console.log("Getting /create/ ...");
     // Send user to home page
     const templateVars = { urlErr, eventErr };
     return res.render("index", templateVars);
-    // return res.render("../index");
   });
 
 

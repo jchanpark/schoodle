@@ -74,6 +74,7 @@ const eventRouter = db => {
         console.log('Checking if event in db', res.rows);
         // if no rows returned, event not in db and error
         if (!res.rows || !res.rows.length) {
+          console.log("Error: event not found in db")
           throw 'eventError';
         }
         return res;

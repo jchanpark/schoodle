@@ -67,41 +67,6 @@ $("#continue-btn2").on("click", function () {
   someFunction(data)
 });
 
-// const activateCopyBtn = datetimePickerConfig => {
-//   $('form .add-btn').on('click', function () {
-//     //  Reference to how to avoid cloned calendar to execute its original calendar
-//     // https://stackoverflow.com/questions/17331137/how-can-i-get-jquery-datepicker-to-work-on-cloned-rows
-
-//     // destroy datetimepicker (IMPORTANT! this must occur before inserting the clone)
-//     $('form .datetimepickers').datetimepicker('destroy');
-
-//     cloneOptionDiv($(this));
-
-//     // configure the datetimepicker again
-//     $('.datetimepickers').datetimepicker(datetimePickerConfig);
-//   });
-// };
-
-// // delete option div when you click on the minus button
-// const activateDeleteBtn = () => {
-//   $('.minus-btn').on('click', function () {
-//     // do not allow users to remove option div if there is only one!
-//     const howManyLeft = $('.option').find('.delete').length;
-//     if (howManyLeft > 1) {
-//       const $currentOption = $(this).parents().eq(3);
-//       $currentOption.remove();
-//     }
-//   })
-// };
-
-// activateCopyBtn(dtPickerConfig);
-// activateDeleteBtn();
-
-
-
-//nav create event click
-$(".nav-create-event").on("click", function () {})
-
 
 const createDateEntry = function() {
   // const entry = $(`<p>Date: <input type="text" class="date" >

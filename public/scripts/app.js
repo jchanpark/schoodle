@@ -1,6 +1,11 @@
 // Client facing scripts here
 $(document).ready(function() {
-  $(".date").datepicker();
+  const max_number_of_event_dates = 5;
+  let event_date_count = 0;
+
+  $(".date").datepicker({
+    minDate: '+1D'
+  });
 
 //nav bar create event button
 $(".nav-create-event").on("click", function () {
@@ -26,9 +31,21 @@ $("#continue-btn").on("click", function () {
 
 //
 $(".add-btn").on("click", function () {
-  const $entry = createDateEntry();
-  $(".date-entry").append($entry)
-  $(".date").datepicker();
+  event_date_count++;
+
+  var startDate = Date.parse($('#start-time').val());
+  var endDate = Date.parse($('#end-time').val());
+  if (startDate >= endDate) { alert("Please enter proper date") }
+
+  if (event_date_count >= max_number_of_event_dates){
+    alert("You've reached the maximum number of event timeslots.");
+  } else {
+    const $entry = createDateEntry();
+    $(".date-entry").append($entry)
+    $(".date").datepicker({
+      minDate: '+1D'
+    });
+  }
 })
 
 $("#continue-btn2").on("click", function () {
@@ -74,8 +91,8 @@ $(".nav-create-event").on("click", function () {})
 
 const createDateEntry = function() {
   const entry = $(`<p>Date: <input type="text" class="date" >
-  Start Time: <input type="time" id="time" min="05:00" max="24:00" required>
-  End Time: <input type="time" id="time" min="05:00" max="24:00" required>
+  Start Time: <input type="time" id="start-time" min="05:00" max="24:00" required>
+  End Time: <input type="time" id="end-time" min="05:00" max="24:00" required>
   <button class="minus-btn" type="submit"> <i class="fa-solid fa-minus"> </i></button> </p>`);
   return entry;
 };

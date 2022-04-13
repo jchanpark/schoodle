@@ -8,4 +8,9 @@ GET event home (redirects to create)
 curl -i -X GET http://localhost:8080/event
 
 GET specific event details
-curl -i X GET http://localhost:8080/event/F8dSFiwIojjZ
+curl -i X GET http://localhost:8080/event/aFctBaYqxzTu
+curl -i X GET http://localhost:8080/event/bAfpGx3Dsxet
+
+POST to specific event
+curl -i X POST --data-urlencode "timeslot_id=164" --data-urlencode "attendee_id=123" --data-urlencode "attend=false" http://localhost:8080/event/aFctBaYqxzTu
+curl -i X POST --data-urlencode "timeslot_id=373" --data-urlencode "attendee_id=123" --data-urlencode "attend=false" http://localhost:8080/event/bAfpGx3Dsxet

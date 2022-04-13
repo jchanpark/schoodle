@@ -43,12 +43,26 @@
   <br>
     <section class="calendar" hidden="true">
       <h1>Select Event dates</h1>
-      <div class="date-entry">
-        <p>Date: <input type="text" class="date" >
-          Start Time: <input type="datetime-local" id="start-time" required>
+      <!-- <div class="date-entry"> -->
+        <table id="date-entry">
+          <tr>
+              <th>Date</th>
+                  <th>Start Time</th>
+                      <th>End Time</th>
+                          <th></th>
+          </tr>
+          <tr>
+              <td><input type="text" class="date" ></td>
+                  <td><input type="time" id="start-time" required></td>
+                      <td><input type="time" id="end-time"  required></td>
+                          <td><button class="minus-btn" type="button" ><i class="fa-solid fa-minus"> </i></button></td>
+          </tr>
+      </table>
+        <!-- <p>Date: <input type="text" class="date" >
+          Start Time: <input type="time" id="start-time" required>
           End Time: <input type="time" id="end-time"  required>
-          <button class="minus-btn" type="button" ><i class="fa-solid fa-minus"> </i></button> </p>
-      </div>
+          <button class="minus-btn" type="button" ><i class="fa-solid fa-minus"> </i></button> </p> -->
+      <!-- </div> -->
       <div class="add-date-btn">
         <button class="add-btn" type="button" ><i class="fa-solid fa-plus"> </i></button>
         <!-- Routes to GET timeslots -> carry over data from this form via cookies -->

@@ -17,37 +17,43 @@
   </section>
 
   <form method="POST" action="/" class="submitForm">
-  <section class="new-event" hidden="true">
-    <h1>Create an Event</h1>
-      <div class="form-section">
-        <label>Title:</label>
-        <textarea placeholder="Event Title" class="text" id="title"></textarea>
-      </div>
-      <div class="form-section">
-        <label>Description:</label>
-        <textarea placeholder="Write a short description" class="text" id="description"></textarea>
-    </div>
-    <div class="form-section">
-      <label>Name:</label>
-      <textarea placeholder="Your full name" class="text" id="name"></textarea>
-    </div>
-    <div class="form-section">
-      <label>Email:</label>
-      <input type="email" id="email" class="text" required placeholder="Enter email" style="Width: 250px"/>
-    </div>
-    <div class="continue-btn">
-      <button class="button" type="button" id="continue-btn" >Continue</button>
-       <!-- Routes to GET timeslots -> carry over data from this form via cookies -->
-    </div>
-  </section>
-  <br>
+    <section class="new-event" hidden="true">
+      <h1>Create an Event</h1>
+        <div class="form-section">
+          <label>Title:</label>
+          <textarea placeholder="Event Title" class="text" name="title" id="title"></textarea>
+        </div>
+        <div class="form-section">
+          <label>Description:</label>
+          <textarea placeholder="Write a short description" class="text" name="description" id="description"></textarea>
+        </div>
+        <div class="form-section">
+          <label>Name:</label>
+          <textarea placeholder="Your full name" class="text" id="name" name="name"></textarea>
+        </div>
+        <div class="form-section">
+          <label>Email:</label>
+          <input type="email" id="email" name="email" class="text" required placeholder="Enter email" style="Width: 250px"/>
+        </div>
+        <div class="continue-btn">
+          <button class="button" type="button" id="continue-btn" >Continue</button>
+          <!-- Routes to GET timeslots -> carry over data from this form via cookies -->
+        </div>
+    </section>
+    <br>
     <section class="calendar" hidden="true">
       <h1>Select Event dates</h1>
       <div class="date-entry">
-        <p>Date: <input type="text" class="date" >
-          Start Time: <input type="datetime-local" id="start-time" required>
-          End Time: <input type="time" id="end-time"  required>
-          <button class="minus-btn" type="button" ><i class="fa-solid fa-minus"> </i></button> </p>
+              Start Time: <input type="datetime-local" id="start-date" required>
+              End Time:   <input type="datetime-local" id="end-date" required></p>
+        <table id="date-entries" hidden="true">
+          <tr>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th></th>
+          </tr>
+      </table>
+
       </div>
       <div class="add-date-btn">
         <button class="add-btn" type="button" ><i class="fa-solid fa-plus"> </i></button>

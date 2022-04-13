@@ -34,13 +34,31 @@ $("#continue-btn").on("click", function () {
   }
 })
 
+//show today`s date function
+const getTodaysDate = function() {
+  var today = new Date();
+  var dd = String(today.getDate()).padStart(2, '0');
+  var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+  var yyyy = today.getFullYear();
+
+  today = yyyy + '-' + mm + '-' + dd;
+  return today;
+}
+
 //adding event dates and times
 $(".add-btn").on("click", function () {
   let startDate = $('#start-date').val();
   let endDate = $('#end-date').val();
   //format dates into timestamps
+  let currentDate = getTodaysDate();
   const startTimestamp = formatDate(startDate);
   const endTimestamp = formatDate(endDate);
+
+  if (startTimestamp < currentDate || endTimestamp < currentDate  ) {
+    alert("Please enter a date after today's date");
+    return
+  }
+
   timeslots.push({
     start_time: startTimestamp,
     end_time: endTimestamp
@@ -55,7 +73,6 @@ $(".add-btn").on("click", function () {
   } else {
     event_date_count++;
 
-    console.log(timeslots);
     if (event_date_count >= max_number_of_event_dates){
       alert("You've reached the maximum number of event timeslots.");
     } else {
@@ -66,6 +83,8 @@ $(".add-btn").on("click", function () {
       // clear input fields to be able to add more event dates
       $('#start-date').val("");
       $('#end-date').val("");
+      // assign timeslot to hidden textarea value in order to pass timeslots to the form
+      $('#timeslots').val(timeslots);
     }
   }
 });
@@ -79,6 +98,23 @@ const formatDate = function (inputDate) {
 
   return `${dateYear}-${dateMonth}-${dateDay} ${dateTime}`
 };
+
+const remove_button   = $(".minus-btn");
+// remove field on click
+let wrapper = $("welcome");
+$(remove_button).click(function(e){
+  // e.preventDefault();
+  if (optionNum > 1) {
+    optionNum--;
+  }
+  let total_fields = wrapper[0].children.length;
+  if(total_fields > 1) {
+      wrapper[0].children[total_fields - 1].remove();
+  }
+});
+
+
+
 
 $("#continue-btn2").on("click", function () {
   test

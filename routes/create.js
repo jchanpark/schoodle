@@ -55,42 +55,44 @@ const createRouter = db => {
     console.log("Query:", query, queryParams);
 
     db.query(query, queryParams)
-      .then(res => {
-        console.log('Event Created:', res.rows);
+      .then(result => {
+        console.log('Event Created:', result.rows);
         return res.redirect(`/event/${url}`);
       })
       .catch(err => {
-        console.log(`Error in updating event`, err);
+        console.log(`Error in updating event:`, err.message);
         res.redirect('/?eventErr=true'); // go back to index, with event error
       });
 
   });
 
-  /* POST request for /creatde/:i
+  /* POST request for /create/:id
      Editing an existing event */
   router.post('/:id', (req, res) => {
     const uid = req.params.id;
 
     // Check cookie if it's the creator
     let user_id = req.session.user_id;
-    const queryCookie = `SELECT *
+    const queryCookie = `
+    SELECT *
     FROM users
     JOIN events ON organizer_id = users.id
-    WHERE users.email = $1 AND events.url = $2; `;
+    WHERE users.email = $1 AND events.url = $2
+    ; `;
     const paramCookie = [user_id, uid];
     db.query(queryCookie, paramCookie)
-      .then(res => {
-        console.log(res.rows);
-        if (res.rows.length !== 1) {
+      .then(result => {
+        console.log(result.rows);
+        if (result.rows.length !== 1) {
           throw 'User not found';
         }
       })
-      .catch(res => {
+      .catch(err => {
         console.log("Error in updating event:", err);
         return res.redirect('/?eventErr=true'); // go back to index, with event error
       })
     // Update event in table with new properties
-      .then(res => {
+      .then(result => {
         const queryEventUpdate = `
         UPDATE title = $2, description = $3
         FROM events
@@ -109,14 +111,13 @@ const createRouter = db => {
         console.log("Query:", queryEventUpdate + queryTimeslotUpdate, queryParams);
         return db.query(queryEventUpdate + queryTimeslotUpdate, queryParams);
       })
-      .then(res => {
-        console.log(res.rows);
+      .then(result => {
+        console.log(result.rows);
         return res.redirect(`/event/${uid}`); // redirect to specific event URL if successful
       })
-      .catch(res => {
-        console.log("Error in updating event",err);
-        return res
-          .redirect('/?eventErr=true'); // go back to index, with event error
+      .catch(err => {
+        console.log("Error in updating event:", err);
+        return res.redirect('/?eventErr=true'); // go back to index, with event error
       });
 
   });

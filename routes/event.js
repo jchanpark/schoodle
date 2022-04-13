@@ -15,7 +15,8 @@ const eventRouter = db => {
     res.redirect('../');
   });
 
-  /* GET request for a specific /event/:id using its unique id */
+  /* GET request for a specific /event/:id using its unique id
+     returning an array of objects of SQL rows */
   router.get("/:id", (req, res) => {
     const uid = req.params.id;
 
@@ -23,18 +24,18 @@ const eventRouter = db => {
     const query = `
     SELECT *
     FROM attendances
-    JOIN timeslots ON timeslot_id = timeslots.id
-    JOIN users ON attendee_id = users.id
-    JOIN events ON event_id = events.id
+      JOIN timeslots ON timeslot_id = timeslots.id
+      JOIN users ON attendee_id = users.id
+      JOIN events ON event_id = events.id
     WHERE url = $1
-    `;
+    ; `;
 
     const queryParams = [uid];
-    console.log("Query:", query, queryParams);
+    // console.log("Query:", query, queryParams);
 
     db.query(query, queryParams)
       .then(result => {
-        console.log("GET result:",result.rows);
+        console.log("GET result:\n===============================\n",result.rows);
         // Error check if anything went wrong
         if (!result.rows.length) {
           throw 'urlError';
@@ -46,8 +47,7 @@ const eventRouter = db => {
       })
       .catch(err => {
         // If no matches, return back to /event/ with error
-        console.log(err.message);
-        console.log("Error on GET /event/:id");
+        console.log("Error on GET /event/:id - ", err.message);
         return res.redirect('../create/?urlErr=true'); // go back to index, with url error
       });
 
@@ -65,48 +65,50 @@ const eventRouter = db => {
     }
 
     //Check if event in db
-    const queryEvent = `SELECT *
+    const queryEvent = `
+    SELECT *
     FROM attendances
-      JOIN users ON attendee_id = users.id
       JOIN timeslots ON timeslot_id = timeslots.id
+      JOIN users ON attendee_id = users.id
       JOIN events ON event_id = events.id
-    WHERE events.url = $1; `;
+    WHERE url = $1
+    ; `;
     const paramEvent = [uid];
 
     db.query(queryEvent, paramEvent)
-      .then(res => {
-        console.log('Checking if event in db', res.rows);
+      .then(result => {
+        console.log('Checking if event in db:', result.rows);
         // if no rows returned, event not in db and error
-        if (!res.rows || !res.rows.length) {
+        if (!result.rows || !result.rows.length) {
           console.log("Error: event not found in db")
           throw 'eventError';
         }
-        return res;
+        return result;
       })
-      .then(res => {
+      .then(result => {
         // Query DB to submit new attendance response
-        const query = `
+        const queryAttendences = `
         INSERT INTO attendances (timeslot_id, attendee_id, attend)
         VALUES ($1, $2, $3)
+        RETURNING *
         ;`;
         // TODO??? may need to loop to insert multiple rows
-
+        // const query
         const queryParams = [
-          res.body.timeslot_id,
-          res.body.attendee_id,
-          res.body.attend
+          req.body.timeslot_id,
+          req.body.attendee_id,
+          req.body.attend
         ];
-
-        console.log("Query:", query, queryParams);
-        return db.query(query, queryParams);
+        console.log("Query:", queryAttendences, queryParams);
+        return db.query(queryAttendences, queryParams);
       })
-      .then(res => {
-        console.log(res.rows);
+      .then(result => {
+        console.log("Result of insert", result.rows);
         // Return to event page
         return res.redirect(`/event/${uid}`);
       })
       .catch(err => {
-        console.log("Error on post /event/:id INSERT");
+        console.log("Error on post /event/:id INSERT - ", err.message);
         return res.redirect('../create/?urlErr=true'); // go back to index, with url error
       });
   });
@@ -123,10 +125,11 @@ const eventRouter = db => {
     }
 
     //Check if attendance_id is in database and user_id matches, if not error
-    const queryEventUser = `SELECT *
+    const queryEventUser = `
+    SELECT *
     FROM attendances
-      JOIN users ON attendee_id = users.id
       JOIN timeslots ON timeslot_id = timeslots.id
+      JOIN users ON attendee_id = users.id
       JOIN events ON event_id = events.id
     WHERE users.email = $1
       AND attendances.id IN $2
@@ -135,36 +138,37 @@ const eventRouter = db => {
     console.log("Auth query:", queryEventUser, paramEventUser);
 
     db.query(queryEventUser, paramEventUser)
-      .then(res => {
-        console.log(res.rows);
+      .then(result => {
+        console.log(result.rows);
 
         // Query DB to update attendance response
         const query = `
         UPDATE attend = $1
         FROM attendances
         WHERE id = $2
+        RETURNING *
         ;`; // may need to update WHERE query
         const queryParams = [req.body.attend, req.body.attendances.id];
 
         return db.query("Query:", query, queryParams);
       })
-      .then(res => {
-        console.log("Update response:", res.rows);
+      .then(result => {
+        console.log("Update response:", result.rows);
 
         // Return to event page
-        return res.redirect(`/event/${uid}`);
+        return result.redirect(`/event/${uid}`);
       })
       .catch(err => {
-        console.log("Error on POST /event/:id UPDATE")
+        console.log("Error on POST /event/:id UPDATE - ", err.message)
         return res.redirect('../create/?urlErr=true'); // go back to index, with url error
       });
 
   });
 
-  // Returns a random character string with upper, lower and numeric of user-defined length
-  const generateRandomString = function(length) {
-    return Buffer.from(Math.random().toString()).toString("base64").substr(10, length);
-  }
+  // // Returns a random character string with upper, lower and numeric of user-defined length
+  // const generateRandomString = function(length) {
+  //   return Buffer.from(Math.random().toString()).toString("base64").substr(10, length);
+  // }
 
 
   /* Return router with defined routes */

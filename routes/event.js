@@ -94,6 +94,7 @@ const eventRouter = db => {
         ;`;
         // TODO??? may need to loop to insert multiple rows
         // const query
+        console.log("req.body\n===============================\n", req.body);
         const queryParams = [
           req.body.timeslot_id,
           req.body.attendee_id,

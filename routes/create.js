@@ -44,7 +44,7 @@ const createRouter = db => {
     INSERT INTO events (title, description, user_id, timeslots_id, url)
     VALUES (
       $1, $2, $3, $4, ${url}
-    ); `;
+    ) RETURNING *; `;
     const queryParams = [
       req.body.title,
       req.body.description,

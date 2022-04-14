@@ -43,10 +43,11 @@ const createRouter = db => {
       ;`;
       db.query(queryUserExists, [user_email])
         .then(result => {
-          console.log("SELECT query result.rows:", result.rows);
           if (result.rows.length) {
             userExists = true;
           }
+          console.log("SELECT query result.rows:", result.rows, "User exists", userExists);
+          console.log("Request body", req.body);
         // If user does not exist in db, insert new user and return new user id
           if (!userExists) {
             const queryUser = `
@@ -106,16 +107,17 @@ const createRouter = db => {
         // Insert all timeslots in timeslots array into table
         let queryTimeslots = `
           INSERT INTO timeslots (event_id, start_time, end_time)
-          VALUES `;
-        let x = 2;
-        let paramTimeslots = [eventID];
-        for (timeslot of req.body.timeslots) {
+          VALUES `; // insert multiple rows into timeslots table
+        let x = 2;  // index to insert parameterized start and end dates
+        let paramTimeslots = [eventID]; // init parameters with event id
+        for (timeslot of req.body.timeslots) {  // loop through timeslots to generate query
           queryTimeslots += `
             ($1, $${x}, $${x+1}),`;
           x += 2;
           paramTimeslots.push(timeslot.startDate, timeslot.endDate);
         }
         queryTimeslots = queryTimeslots.slice(0, -1) + ` RETURNING *; `;
+
         console.log("Timeslot insert query:", queryTimeslots, paramTimeslots);
         return db.query(queryTimeslots, paramTimeslots);
       })

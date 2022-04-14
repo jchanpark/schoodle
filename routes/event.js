@@ -22,7 +22,7 @@ const eventRouter = db => {
 
     // Query DB for all information on the specified event
     const query = `
-    SELECT *
+    SELECT attendances.id AS attend_id, *
     FROM events
       LEFT OUTER JOIN timeslots ON event_id = events.id
       LEFT OUTER JOIN attendances ON timeslot_id = timeslots.id
@@ -160,28 +160,20 @@ const eventRouter = db => {
   });
 
   /* POST request for a specific event id to edit response */
-  router.post("/:id", (req, res) => {
-    const uid = req.params.id;
+  router.post("/edit/:id", (req, res) => {
+    let user_id_from_email = 0;
 
-    let user_id = 0;
-
-    // Get or set cookie for attendee
-    authUser(req)
+    // Check if email in cookie is in db, and get user id of email
+    db.query('SELECT id FROM users WHERE email = $1;', [req.session.user_id])
       .then(resultUserId => {
-        // Error if user was not in database, since cannot be correct cookie
-        if (!resultUserId[1]) {
+        if (!resultUserId.rows.length) {
+          console.log("Error: email not found in db");
           throw 'authErr';
         }
-        user_id = resultUserId[0];
+        user_id_from_email = resultUserId.rows[0].id;  // get user id based on email
 
-        //Check if event in db
-        const queryEvent = `
-        SELECT * FROM events
-        WHERE url = $1
-        ; `;
-        const paramEvent = [req.params.id];
-
-        return db.query(queryEvent, paramEvent)
+    // Check if event in db
+        return db.query('SELECT id FROM events WHERE url = $1;', [req.params.id])
       })
       .then(resultEventQ => {
         console.log('Checking if event in db:', resultQueryEvent.rows);
@@ -190,11 +182,13 @@ const eventRouter = db => {
           console.log("Error: event not found in db")
           throw 'eventError';
         }
+        // return event id based on url
         return resultEventQ.rows[0].id;
       })
       .then(resultEventId => {
+    // Update
         console.log("Event id inserting into:", resultEventId);
-        // Insert all attendances in attendances array into table
+        // Update all attendances in attendances array into table
         let queryAttends = `
           INSERT INTO attendances (timeslot_id, attendee_id, attend)
           VALUES `; // insert multiple rows into attendances table
@@ -204,7 +198,7 @@ const eventRouter = db => {
           queryAttends += `
             ($${x}, $${x+1}, $${x+2}),`;
           x += 4;
-          paramAttends.push(attendance.timeslot_id, user_id, attendance.attend);
+          paramAttends.push(attendance.timeslot_id, user_id_from_email, attendance.attend);
         }
         queryAttends = queryAttends.slice(0, -1) + ` RETURNING *; `;
 

@@ -1,3 +1,4 @@
+
 // Client facing scripts here
 $(document).ready(function() {
   const max_number_of_event_dates = 5;
@@ -27,10 +28,10 @@ $("#continue-btn").on("click", function () {
   else{
     $(".welcome").hide();
     $(".calendar").show();
-    $('#title').attr('disabled', true);
-    $('#description').attr('disabled', true);
-    $('#name').attr('disabled', true);
-    $('#email').attr('disabled', true);
+    // $('#title').attr('disabled', true);
+    // $('#description').attr('disabled', true);
+    // $('#name').attr('disabled', true);
+    // $('#email').attr('disabled', true);
   }
 })
 
@@ -60,8 +61,8 @@ $(".add-btn").on("click", function () {
   }
 
   timeslots.push({
-    start_time: startTimestamp,
-    end_time: endTimestamp
+    startDate: startTimestamp,
+    endDate: endTimestamp
   });
 
 
@@ -99,21 +100,23 @@ const formatDate = function (inputDate) {
   return `${dateYear}-${dateMonth}-${dateDay} ${dateTime}`
 };
 
-const remove_button   = $(".minus-btn");
-// remove field on click
-let wrapper = $("welcome");
-$(remove_button).click(function(e){
-  // e.preventDefault();
-  if (optionNum > 1) {
-    optionNum--;
-  }
-  let total_fields = wrapper[0].children.length;
-  if(total_fields > 1) {
-      wrapper[0].children[total_fields - 1].remove();
-  }
+$("#date-entries").on("click",".minus-btn", function(e){ //user click on remove text
+
+  alert(`Allloo`)
+  e.preventDefault();
+  let tableRow = $(this).closest('tr');
+
+  var a = tableRow.children();
+  let timeslots = $("#timeslots").val();
+  // console.log(`${inspect(timeslots)}`)
+
+  alert(`${timeslots}`)
+  alert(`StartTime ${a[0].innerText} EndTime ${a[1].innerText}`)
+
+
+  tableRow.remove();
+  event_date_count--;
 });
-
-
 
 
 $("#continue-btn2").on("click", function () {
@@ -121,6 +124,29 @@ $("#continue-btn2").on("click", function () {
   someFunction(data)
 });
 
+$("#submitForm").submit(function(event) {
+  event.preventDefault();
+  console.log(timeslots)
+
+  let finaldataToPass = {
+    title: $("#title").val(),
+    description: $("#description").val() ,
+    email: $("#email").val() ,
+    timeslots: timeslots
+  }
+  alert(`${finaldataToPass}`)
+  let json_data = JSON.stringify(finaldataToPass)
+  alert(`${json_data}`)
+  console.log(finaldataToPass)
+  console.log(json_data)
+  $.ajax({
+    method: "POST",
+    url: "/",
+    data: json_data,
+    dataType : "json"
+  });
+
+});
 
 const createDateEntry = function(startTime, endTime) {
   // const entry = $(`<p>Date: <input type="text" class="date" >

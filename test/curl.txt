@@ -35,3 +35,21 @@ ALTER TABLE users OWNER TO labber;
 ALTER TABLE events OWNER TO labber;
 ALTER TABLE timeslots OWNER TO labber;
 ALTER TABLE attendances OWNER TO labber;
+
+
+
+------
+Notes:
+------
+
+{
+  "title":"s",
+  "description":"s",
+  "email":"rider1993@gmail.com",
+  "timeslots":[
+    {
+      "startDate":"2022-04-14 11:32",
+      "endDate":"2022-04-15 11:32"
+    }
+  ]
+}:

@@ -1,4 +1,3 @@
-
 // Client facing scripts here
 $(document).ready(function() {
   const max_number_of_event_dates = 5;
@@ -28,10 +27,6 @@ $("#continue-btn").on("click", function () {
   else{
     $(".welcome").hide();
     $(".calendar").show();
-    // $('#title').attr('disabled', true);
-    // $('#description').attr('disabled', true);
-    // $('#name').attr('disabled', true);
-    // $('#email').attr('disabled', true);
   }
 })
 
@@ -126,33 +121,29 @@ $("#continue-btn2").on("click", function () {
 
 $("#submitForm").submit(function(event) {
   event.preventDefault();
-  console.log(timeslots)
 
   let finaldataToPass = {
     title: $("#title").val(),
-    description: $("#description").val() ,
-    email: $("#email").val() ,
+    description: $("#description").val(),
+    name: $("#name").val(),
+    email: $("#email").val(),
     timeslots: timeslots
   }
-  alert(`${finaldataToPass}`)
-  let json_data = JSON.stringify(finaldataToPass)
-  alert(`${json_data}`)
-  console.log(finaldataToPass)
+
+  let json_data = JSON.stringify(finaldataToPass);
   console.log(json_data)
+
+  // alert(`${json_data}`)
   $.ajax({
     method: "POST",
-    url: "/",
+    url: "/create",
     data: json_data,
-    dataType : "json"
+    contentType: "application/json"
   });
 
 });
 
 const createDateEntry = function(startTime, endTime) {
-  // const entry = $(`<p>Date: <input type="text" class="date" >
-  // Start Time: <input type="time" id="start-time" min="05:00" max="24:00" required>
-  // End Time: <input type="time" id="end-time" min="05:00" max="24:00" required>
-  // <button class="minus-btn" type="submit"> <i class="fa-solid fa-minus"> </i></button> </p>`);
   const entry = $(`<tr>
   <td>${startTime}</td>
   <td>${endTime}</td>

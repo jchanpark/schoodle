@@ -41,15 +41,15 @@ const createRouter = db => {
 
     // Insert new event into events table
     const query = `
-    INSERT INTO events (title, description, user_id, timeslots_id, url)
+    INSERT INTO events (title, description, user_id, timeslots, url)
     VALUES (
       $1, $2, $3, $4, ${url}
     ) RETURNING *; `;
     const queryParams = [
       req.body.title,
       req.body.description,
-      req.body.user_id,
-      req.body.timeslots_id
+      req.session.user_id,
+      req.body.timeslots
     ];
     // TODO: to populate with request props
     console.log("Query:", query, queryParams);

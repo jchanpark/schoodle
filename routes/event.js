@@ -23,10 +23,10 @@ const eventRouter = db => {
     // Query DB for all information on the specified event
     const query = `
     SELECT *
-    FROM attendances
-      JOIN timeslots ON timeslot_id = timeslots.id
-      JOIN users ON attendee_id = users.id
-      JOIN events ON event_id = events.id
+    FROM events
+      LEFT OUTER JOIN timeslots ON event_id = events.id
+      LEFT OUTER JOIN attendances ON timeslot_id = timeslots.id
+      LEFT OUTER JOIN users ON attendee_id = users.id
     WHERE url = $1
     ; `;
 
@@ -35,7 +35,7 @@ const eventRouter = db => {
 
     db.query(query, queryParams)
       .then(result => {
-        console.log("GET result:\n===============================\n",result.rows);
+        console.log("GET result:\n===============================\n", result.rows);
         // Error check if anything went wrong
         if (!result.rows.length) {
           throw 'urlError';

@@ -41,7 +41,7 @@ const eventRouter = db => {
           throw 'urlError';
         }
         // Process returned data from database into template variables
-        const templateVars = result.rows;
+        const templateVars = { result: result.rows };
         // Go to event-specific page
         return res.render('events', templateVars);
       })
@@ -163,51 +163,106 @@ const eventRouter = db => {
   router.post("/:id", (req, res) => {
     const uid = req.params.id;
 
+    let user_id = 0;
+
     // Get or set cookie for attendee
-    let user_id = req.session.user_id;
-    if (!user_id) {
-      user_id = req.body.email;
-      req.session.user_id = user_id;
-    }
+    authUser(req)
+      .then(resultUserId => {
+        // Error if user was not in database, since cannot be correct cookie
+        if (!resultUserId[1]) {
+          throw 'authErr';
+        }
+        user_id = resultUserId[0];
 
-    //Check if attendance_id is in database and user_id matches, if not error
-    const queryEventUser = `
-    SELECT *
-    FROM attendances
-      JOIN timeslots ON timeslot_id = timeslots.id
-      JOIN users ON attendee_id = users.id
-      JOIN events ON event_id = events.id
-    WHERE users.email = $1
-      AND attendances.id IN $2
-      AND events.url = $3; `;
-    const paramEventUser = [user_id, INSERT_ATTENDANCE_ARRAY, uid];
-    console.log("Auth query:", queryEventUser, paramEventUser);
+        //Check if event in db
+        const queryEvent = `
+        SELECT * FROM events
+        WHERE url = $1
+        ; `;
+        const paramEvent = [req.params.id];
 
-    db.query(queryEventUser, paramEventUser)
-      .then(result => {
-        console.log(result.rows);
-
-        // Query DB to update attendance response
-        const query = `
-        UPDATE attend = $1
-        FROM attendances
-        WHERE id = $2
-        RETURNING *
-        ;`; // may need to update WHERE query
-        const queryParams = [req.body.attend, req.body.attendances.id];
-
-        return db.query("Query:", query, queryParams);
+        return db.query(queryEvent, paramEvent)
       })
-      .then(result => {
-        console.log("Update response:", result.rows);
+      .then(resultEventQ => {
+        console.log('Checking if event in db:', resultQueryEvent.rows);
+        // if no rows returned, event not in db and error
+        if (!resultEventQ.rows.length) {
+          console.log("Error: event not found in db")
+          throw 'eventError';
+        }
+        return resultEventQ.rows[0].id;
+      })
+      .then(resultEventId => {
+        console.log("Event id inserting into:", resultEventId);
+        // Insert all attendances in attendances array into table
+        let queryAttends = `
+          INSERT INTO attendances (timeslot_id, attendee_id, attend)
+          VALUES `; // insert multiple rows into attendances table
+        let x = 1;  // index to insert parameterized start and end dates
+        let paramAttends = [];
+        for (attendance of req.body.attendances) {  // loop through timeslots to generate query
+          queryAttends += `
+            ($${x}, $${x+1}, $${x+2}),`;
+          x += 4;
+          paramAttends.push(attendance.timeslot_id, user_id, attendance.attend);
+        }
+        queryAttends = queryAttends.slice(0, -1) + ` RETURNING *; `;
 
+        console.log("Attendance insert query:", queryAttends, paramAttends);
+        return db.query(queryAttends, paramAttends);
+      })
+      .then(resultInsertAttend => {
+        console.log("Result of attendance insert:", resultInsertAttend.rows);
         // Return to event page
-        return result.redirect(`/event/${uid}`);
+        return res.redirect(`/event/${req.params.id}`);
       })
       .catch(err => {
-        console.log("Error on POST /event/:id UPDATE - ", err.message)
+        console.log("Error on post /event/:id INSERT - ", err.message);
         return res.redirect('../create/?urlErr=true'); // go back to index, with url error
       });
+
+
+
+
+      //   //Check if attendance_id is in database and user_id matches, if not error
+      //   const queryEventUser = `
+      //   SELECT *
+      //   FROM attendances
+      //     JOIN timeslots ON timeslot_id = timeslots.id
+      //     JOIN users ON attendee_id = users.id
+      //     JOIN events ON event_id = events.id
+      //   WHERE users.email = $1
+      //     AND attendances.id IN $2
+      //     AND events.url = $3; `;
+      //   const paramEventUser = [user_id, INSERT_ATTENDANCE_ARRAY, uid];
+      //   console.log("Auth query:", queryEventUser, paramEventUser);
+
+      //   return db.query(queryEventUser, paramEventUser)
+      // })
+      // .then(result => {
+      //   console.log(result.rows);
+
+      //   // Query DB to update attendance response
+      //   const query = `
+      //   UPDATE attend = $1
+      //   FROM attendances
+      //   WHERE id = $2
+      //   RETURNING *
+      //   ;`; // may need to update WHERE query
+      //   const queryParams = [req.body.attend, req.body.attendances.id];
+
+      //   return db.query("Query:", query, queryParams);
+      // })
+      // .then(result => {
+      //   console.log("Update response:", result.rows);
+
+      //   // Return to event page
+      //   return result.redirect(`/event/${uid}`);
+      // })
+      // .catch(err => {
+      //   console.log("Error on POST /event/:id UPDATE - ", err.message)
+      //   return res.redirect('../create/?urlErr=true'); // go back to index, with url error
+      // });
 
   });
 

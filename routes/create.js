@@ -140,17 +140,6 @@ const createRouter = db => {
   router.post('/:id', (req, res) => {
     const uid = req.params.id;
 
-    // Check cookie if it's the creator
-    let user_cookie = req.session.user_id;
-    // const queryCookie = `
-    // SELECT *
-    // FROM users
-    // JOIN events ON organizer_id = users.id
-    // WHERE users.email = $1 AND events.url = $2
-    // ; `;
-    // const paramCookie = [user_id, uid];
-    // db.query(queryCookie, paramCookie)
-
     // Get or create user, and then return result from authUser
     authUser(req)
       .then(resultAuth => {

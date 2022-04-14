@@ -44,6 +44,7 @@ ALTER TABLE attendances OWNER TO labber;
 Notes:
 ------
 
+create event json
 {
   "title":"s",
   "description":"s",
@@ -55,3 +56,23 @@ Notes:
     }
   ]
 }:
+
+add attendee information json
+{
+  "name": "nathan",
+  "email": "nathan@tsang",
+  "attendances": [
+    {
+      timeslot_id: 12,
+      attend: true
+    },
+    {
+      timeslot_id: 13,
+      attend: true
+    },
+    {
+      timeslot_id: 14,
+      attend: true
+    }
+  ]
+}

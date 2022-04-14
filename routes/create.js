@@ -126,7 +126,6 @@ const createRouter = db => {
 
         return res.redirect(`/event/${url}`);
       })
-      .then()
       .catch(err => {
         console.log(`Error in creating event:`, err.message);
         res.redirect('/?eventErr=true'); // go back to index, with event error

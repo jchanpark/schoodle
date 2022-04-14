@@ -2,6 +2,7 @@
 $(document).ready(function() {
   const max_number_of_event_dates = 5;
   let event_date_count = 0;
+  let timeslots = [];
 
   $(".date").datepicker({
     minDate: '+1D'
@@ -26,74 +27,75 @@ $("#continue-btn").on("click", function () {
   else{
     $(".welcome").hide();
     $(".calendar").show();
+    $('#title').attr('disabled', true);
+    $('#description').attr('disabled', true);
+    $('#name').attr('disabled', true);
+    $('#email').attr('disabled', true);
   }
 })
 
-//
+//adding event dates and times
 $(".add-btn").on("click", function () {
-  event_date_count++;
+  let startDate = $('#start-date').val();
+  let endDate = $('#end-date').val();
+  //format dates into timestamps
+  const startTimestamp = formatDate(startDate);
+  const endTimestamp = formatDate(endDate);
+  timeslots.push({
+    start_time: startTimestamp,
+    end_time: endTimestamp
+  });
 
-  var startDate = Date.parse($('#start-time').val());
-  var endDate = Date.parse($('#end-time').val());
-  if (startDate >= endDate) { alert("Please enter proper date") }
 
-  if (event_date_count >= max_number_of_event_dates){
-    alert("You've reached the maximum number of event timeslots.");
+  // date validations - dates/times must not be empty
+  // start date must before the end date
+  // use timestamps to do the comparisons
+  if (startDate >= endDate || startDate === "" || endDate === "") {
+    alert("Please enter proper time values");
   } else {
-    const $entry = createDateEntry();
-    $(".date-entry").append($entry)
-    $(".date").datepicker({
-      minDate: '+1D'
-    });
+    event_date_count++;
+
+    console.log(timeslots);
+    if (event_date_count >= max_number_of_event_dates){
+      alert("You've reached the maximum number of event timeslots.");
+    } else {
+      const $entry = createDateEntry(startTimestamp, endTimestamp);
+      // show event date table with newly added date
+      $("#date-entries").show();
+      $("#date-entries").append($entry);
+      // clear input fields to be able to add more event dates
+      $('#start-date').val("");
+      $('#end-date').val("");
+    }
   }
-})
+});
+
+const formatDate = function (inputDate) {
+  let date = inputDate.split('');
+  let dateDay = date.slice(8, 10).join('');
+  let dateMonth = date.slice(5, 7).join('');
+  let dateYear = date.slice(0, 4).join('');
+  let dateTime = date.slice(11, 16).join('');
+
+  return `${dateYear}-${dateMonth}-${dateDay} ${dateTime}`
+};
 
 $("#continue-btn2").on("click", function () {
   test
   someFunction(data)
 });
 
-// const activateCopyBtn = datetimePickerConfig => {
-//   $('form .add-btn').on('click', function () {
-//     //  Reference to how to avoid cloned calendar to execute its original calendar
-//     // https://stackoverflow.com/questions/17331137/how-can-i-get-jquery-datepicker-to-work-on-cloned-rows
 
-//     // destroy datetimepicker (IMPORTANT! this must occur before inserting the clone)
-//     $('form .datetimepickers').datetimepicker('destroy');
-
-//     cloneOptionDiv($(this));
-
-//     // configure the datetimepicker again
-//     $('.datetimepickers').datetimepicker(datetimePickerConfig);
-//   });
-// };
-
-// // delete option div when you click on the minus button
-// const activateDeleteBtn = () => {
-//   $('.minus-btn').on('click', function () {
-//     // do not allow users to remove option div if there is only one!
-//     const howManyLeft = $('.option').find('.delete').length;
-//     if (howManyLeft > 1) {
-//       const $currentOption = $(this).parents().eq(3);
-//       $currentOption.remove();
-//     }
-//   })
-// };
-
-// activateCopyBtn(dtPickerConfig);
-// activateDeleteBtn();
-
-
-
-//nav create event click
-$(".nav-create-event").on("click", function () {})
-
-
-const createDateEntry = function() {
-  const entry = $(`<p>Date: <input type="text" class="date" >
-  Start Time: <input type="time" id="start-time" min="05:00" max="24:00" required>
-  End Time: <input type="time" id="end-time" min="05:00" max="24:00" required>
-  <button class="minus-btn" type="submit"> <i class="fa-solid fa-minus"> </i></button> </p>`);
+const createDateEntry = function(startTime, endTime) {
+  // const entry = $(`<p>Date: <input type="text" class="date" >
+  // Start Time: <input type="time" id="start-time" min="05:00" max="24:00" required>
+  // End Time: <input type="time" id="end-time" min="05:00" max="24:00" required>
+  // <button class="minus-btn" type="submit"> <i class="fa-solid fa-minus"> </i></button> </p>`);
+  const entry = $(`<tr>
+  <td>${startTime}</td>
+  <td>${endTime}</td>
+  <td><button class="minus-btn" type="button" ><i class="fa-solid fa-minus"> </i></button></td>
+  </tr>`);
   return entry;
 };
 

@@ -41,7 +41,7 @@ const eventRouter = db => {
           throw 'urlError';
         }
         // Process returned data from database into template variables
-        const templateVars = result.rows[0];
+        const templateVars = result.rows;
         // Go to event-specific page
         return res.render('events', templateVars);
       })

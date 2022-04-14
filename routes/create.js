@@ -23,74 +23,131 @@ const createRouter = db => {
     return res.render("index", templateVars);
   });
 
+  /* Function to authenticate user, getting and/or setting cookie
+     to save user email, and adding user to database if not already in db.
+     This function returns an array [a user_id integer and a inDatabase boolean]. */
+  const authUser = function(req) {
+    return new Promise((resolve, reject) => {
 
-  /* POST request for /create/
+      // Get or set cookie to authenticate event
+      // Note: resets cookie to match provided email in form
+      const user_email = req.body.email;
+      req.session.user_id = user_email;
+
+      // Check if user in db; if not, create user and return false
+      let userExists = false;
+
+      // Query DB to check if user exists
+      const queryUserExists = `
+      SELECT * FROM users WHERE email = $1
+      ;`;
+      db.query(queryUserExists, [user_email])
+        .then(result => {
+          console.log("SELECT query result.rows:", result.rows);
+          if (result.rows.length) {
+            userExists = true;
+          }
+        // If user does not exist in db, insert new user and return new user id
+          if (!userExists) {
+            const queryUser = `
+            INSERT INTO users (name, email)
+            VALUES ($1, $2)
+            RETURNING *
+            ;`;
+            return db.query(queryUser, [req.body.name, req.body.email])
+              .then(resultInsert => {
+                console.log("INSERT users result.rows:", resultInsert.rows);
+                return resolve([resultInsert.rows[0].id, false]);
+              });
+          }
+        // If user exists in db, return found user id
+          console.log("Users found:", result.rows)
+          return resolve([result.rows[0].id, true]);
+        })
+        .catch(err => {
+          console.log("Error in validating user:", err.message);
+        })
+
+    });
+  };
+
+  /* POST request for /create
      Creating a new event
-     index posts here */
+     index.ejs posts here       */
   router.post('/', (req, res) => {
 
-    // Get or set cookie to authenticate event
-    let user_id = req.session.user_id;
-    if (!user_id) {
-      user_id = req.body.email;
-      req.session.user_id = user_id;
-    }
+    // Get or create user, and then return result from authUser
+    authUser(req)
+      .then(resultUserId => {
+        const user_id = resultUserId[0];
 
-    // Generate random string as unique id/url
-    const url = generateRandomString(30);
+        // Generate random string as unique id/url
+        const url = generateRandomString(30);
 
-    // Insert new event into events table
-    const query = `
-    INSERT INTO events (title, description, user_id, timeslots, url)
-    VALUES (
-      $1, $2, $3, $4, ${url}
-    ); `;
-    const queryParams = [
-      req.body.title,
-      req.body.description,
-      req.session.user_id,
-      req.body.timeslots
-    ];
-    // TODO: to populate with request props
-    console.log("Query:", query, queryParams);
+        // Insert new event into events table
+        const query = `
+        INSERT INTO events (title, description, organizer_id, url)
+        VALUES (
+          $1, $2, $3, $4
+        ) RETURNING *; `;
+        const queryParams = [
+          req.body.title,
+          req.body.description,
+          user_id,
+          url
+        ];
+        console.log("Query:", query, queryParams);
 
-    db.query(query, queryParams)
-      .then(res => {
-        console.log('Event Created:', res.rows);
-        return res.redirect(`/event/${url}`);
+        return db.query(query, queryParams)
+          .then(resultInsert => {
+            console.log('Event Created:', resultInsert.rows);
+            return res.redirect(`/event/${url}`);
+          });
       })
       .catch(err => {
-        console.log(`Error in updating event`, err);
+        console.log(`Error in creating event:`, err.message);
         res.redirect('/?eventErr=true'); // go back to index, with event error
       });
 
   });
 
-  /* POST request for /creatde/:i
-     Editing an existing event */
+  /* POST request for /create/:id
+     Editing an existing event
+     /event/:id posts here        */
+  /*
   router.post('/:id', (req, res) => {
     const uid = req.params.id;
-
     // Check cookie if it's the creator
-    let user_id = req.session.user_id;
-    const queryCookie = `SELECT *
-    FROM users
-    JOIN events ON organizer_id = users.id
-    WHERE users.email = $1 AND events.url = $2; `;
-    const paramCookie = [user_id, uid];
-    db.query(queryCookie, paramCookie)
-      .then(res => {
-        console.log(res.rows);
-        if (res.rows.length !== 1) {
+    let user_cookie = req.session.user_id;
+    // const queryCookie = `
+    // SELECT *
+    // FROM users
+    // JOIN events ON organizer_id = users.id
+    // WHERE users.email = $1 AND events.url = $2
+    // ; `;
+    // const paramCookie = [user_id, uid];
+    // db.query(queryCookie, paramCookie)
+    // Get or create user, and then return result from authUser
+    authUser(req)
+      .then(resultAuth => {
+        // check if user cookie same as db
+        if (!resultAuth[1]) {
+          throw 'userError';
+        }
+        return resultAuth[0];
+      })
+      .then(resultUserId => {
+        console.log(resultUserId.rows);
+        if (resultUserId.rows.length !== 1) {
           throw 'User not found';
         }
       })
-      .catch(res => {
+      .catch(err => {
         console.log("Error in updating event:", err);
         return res.redirect('/?eventErr=true'); // go back to index, with event error
       })
     // Update event in table with new properties
-      .then(res => {
+      .then(result => {
         const queryEventUpdate = `
         UPDATE title = $2, description = $3
         FROM events
@@ -109,17 +166,16 @@ const createRouter = db => {
         console.log("Query:", queryEventUpdate + queryTimeslotUpdate, queryParams);
         return db.query(queryEventUpdate + queryTimeslotUpdate, queryParams);
       })
-      .then(res => {
-        console.log(res.rows);
+      .then(result => {
+        console.log(result.rows);
         return res.redirect(`/event/${uid}`); // redirect to specific event URL if successful
       })
-      .catch(res => {
-        console.log("Error in updating event",err);
-        return res
-          .redirect('/?eventErr=true'); // go back to index, with event error
+      .catch(err => {
+        console.log("Error in updating event:", err);
+        return res.redirect('/?eventErr=true'); // go back to index, with event error
       });
-
   });
+  */
 
   // Returns a random character string with upper, lower and numeric of user-defined length
   const generateRandomString = function(length) {

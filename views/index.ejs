@@ -8,6 +8,7 @@
 <body>
   <%- include('partials/_nav') %>
 
+
 <!-- Page-specific (main) content here -->
 <main class="container">
   <section class="welcome" >
@@ -16,7 +17,7 @@
     <h2>Where all your scheduling needs are met</h2>
   </section>
 
-  <form method="POST" action="/" class="submitForm">
+  <form method="POST" action="/create" class="submitForm" id="submitForm">
     <section class="new-event" hidden="true">
       <h1>Create an Event</h1>
         <div class="form-section">
@@ -35,6 +36,10 @@
           <label>Email:</label>
           <input type="email" id="email" name="email" class="text" required placeholder="Enter email" style="Width: 250px"/>
         </div>
+        <div>
+          <textarea class="text"name="timeslots" id="timeslots" hidden="true" >      </textarea>
+        </div>
+
         <div class="continue-btn">
           <button class="button" type="button" id="continue-btn" >Continue</button>
           <!-- Routes to GET timeslots -> carry over data from this form via cookies -->
@@ -44,8 +49,19 @@
     <section class="calendar" hidden="true">
       <h1>Select Event dates</h1>
       <div class="date-entry">
-              Start Time: <input type="datetime-local" id="start-date" required>
-              End Time:   <input type="datetime-local" id="end-date" required></p>
+
+              Start Time: <input type="datetime-local" id="start-date" min required>
+              End Time:   <input type="datetime-local" id="end-date" required>
+              <select name="timezone" id="timezone">
+                <option value="Eastern">Eastern</option>
+                <option value="Pacific">Pacific</option>
+                <option value="Mountain">Mountain</option>
+                <option value="Central">Central</option>
+                <option value="Atlantic">Atlantic</option>
+                <option value="Newfoundland">Newfoundland</option>
+                <!-- and so on -->
+            </select>
+
         <table id="date-entries" hidden="true">
           <tr>
             <th>Start Time</th>

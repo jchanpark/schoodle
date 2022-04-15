@@ -250,6 +250,7 @@ const eventRouter = db => {
         return res.redirect('../create/?urlErr=true'); // go back to index, with url error
       });
 
+
   });
 
   /* Return router with defined routes */

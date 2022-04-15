@@ -60,7 +60,7 @@
                 <td><input slot="<%= i %>" time_id="<%= result[i].time_id %>" type="checkbox"></td>
               </tr>
             <% } %> -->
-            <% let x = 0; %>
+            <% let x = 0 %>
             <% for (const time in timeslot_list) { %>
               <tr>
                 <% let options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'} %>
@@ -87,9 +87,9 @@
   <div class="table-wrapper">
     <table class="fl-table">
       <thead>
-      <tr>
-        <th>Start-time</th>
-        <th>End-time</th>
+      <tr align=center >
+        <th>Start Time</th>
+        <th>End Time</th>
         <th>Name</th>
         <th>Email</th>
         <th>Attending</th>
@@ -98,8 +98,9 @@
       <tbody class="attendee-entry" >
         <% for(let row of result) {%>
           <tr align=center>
-            <td><%= new Date(row.start_time).getHours() %>:<%= new Date(row.start_time).getMinutes() %></td>
-            <td><%= new Date(row.end_time).getHours() %>:<%= new Date(row.end_time).getMinutes() %></td>
+            <% let options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'} %>
+            <td><%= new Date(row.start_time).toLocaleDateString("en-US", options) %></td>
+            <td><%= new Date(row.end_time).toLocaleDateString("en-US", options) %></td>
             <td><%= row.name %></td>
             <td><%= row.email %></td>
             <td style="display:flex; justify-content: center;"><input type="checkbox" class="text" id="checkbox" style="Width: 50px" <%= row.attend ? "checked" : "" %> /></td>

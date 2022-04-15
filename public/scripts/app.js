@@ -94,21 +94,14 @@ const formatDate = function (inputDate) {
 
 $("#date-entries").on("click",".minus-btn", function(e){ //user click on remove text
 
-  alert(`Allloo`)
   e.preventDefault();
   let tableRow = $(this).closest('tr');
-
-  var a = tableRow.children();
-  let timeslots = $("#timeslots").val();
-  // console.log(`${inspect(timeslots)}`)
-
-  alert(`${timeslots}`)
-  alert(`StartTime ${a[0].innerText} EndTime ${a[1].innerText}`)
-
 
   tableRow.remove();
   event_date_count--;
 });
+
+
 
 $("#submitForm").submit(function(event) {
   event.preventDefault();
@@ -124,25 +117,22 @@ $("#submitForm").submit(function(event) {
   let json_data = JSON.stringify(finaldataToPass);
   console.log(json_data)
 
-  // alert(`${json_data}`)
+  alert(`${json_data}`)
   $.ajax({
     method: "POST",
     url: "/create",
     data: json_data,
-    contentType: "application/json"
-  })
-  .then(function(response) {
-    console.log(response);
+    contentType: "application/json",
 
-    // render(response);
-
-    if (response.redirect) {
-      window.location.replace(response.redir_url);
+    success: function(result) {
+      console.log(result['url'])
+      $(".url").show();
+      $(".welcome").hide();
+      $(".calendar").hide();
+      $(".new-event").hide();
+      document.getElementById("event-url").innerHTML = `http://localhost:8080/event/${result['url']}`;
     }
-
-    // $.get(response.redir_url);
-  });
-
+  })
 });
 
 $("#submitAttend").submit(function(event) {
@@ -178,7 +168,12 @@ $("#submitAttend").submit(function(event) {
     method: "POST",
     url: eventUrl,
     data: json_data,
-    contentType: "application/json"
+    contentType: "application/json",
+
+    success: function(result) {
+      let data = {startTime: "test", endTime: "testing", name: $('[name="name"]').val(), email: $('[name="email"]').val(), response: "true" }
+      someFunction(data)
+    }
   })
 
 });
@@ -192,10 +187,14 @@ const createDateEntry = function(startTime, endTime) {
   return entry;
 };
 
+
+//
 const createAttendeeEntry = function(data) {
   const entry = $(`<tr>
-  <td>${data.email}</td>
+  <td>${data.startTime}</td>
+  <td>${data.endTime}</td>
   <td>${data.name}</td>
+  <td>${data.email}</td>
   <td>${data.response}</td>
   </tr>
 `);
@@ -214,22 +213,22 @@ const someFunction = function(dataFromForm) {
 //hardcoded data is being fed to this function
 //data should be retrived from the dartabase as an array of objects which will dynamically populate the attendee table
 const loadEntries = function(data) {
+
+
+
   for(let attendeeData of data) {
     const $entry = createAttendeeEntry(attendeeData);
     $(".attendee-entry").append($entry)
   }
 }
 
-
 $("#sumbit-attend-btn").on("click", function () {
   // get form data $(#id-val).val()
-  location.reload();
-  // someFunction(data)
+  // location.reload();
+  // someFunction()
 });
 
 loadEntries(data);
-
-
 
 
 

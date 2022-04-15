@@ -273,4 +273,32 @@ body header {
       display: block;
       text-align: center;
   }
+
+  .container .url {
+    border-radius: 10px;
+    background-color: #dfecf5;
+    padding: 40px;
+    padding-left: 70px;
+    padding-right: 70px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  }
+
+  .url p{
+    font-family:'Grape Nuts', cursive;
+    font-size: 2.5em;
+    color: white;
+    text-decoration: none;
+    padding-left: 5px;
+  }
+
+  .container .event {
+    border-radius: 10px;
+    background-color: #dfecf5;
+    padding: 40px;
+    padding-left: 70px;
+    padding-right: 70px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  }
+
+
 }

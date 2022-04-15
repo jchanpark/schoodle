@@ -125,18 +125,16 @@ const createRouter = db => {
         console.log("Result of timeslot insert:", resultInsertTime.rows);
 
         // return res.redirect(`/event/${url}`);
-        // Can't use res.redirect since we use ajax to POST
-        return {
-          "redirect":true,
-          "redir_url":`/event/${url}`
-        };
+        // return url;
+
+        return res.send({url: `${url}`});
       })
       .catch(err => {
         console.log(`Error in creating event:`, err.message);
         res.redirect('/?eventErr=true'); // go back to index, with event error
       });
-
   });
+  */
 
   // Returns a random character string with upper, lower and numeric of user-defined length
   const generateRandomString = function(length) {

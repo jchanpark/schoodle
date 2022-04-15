@@ -105,6 +105,13 @@ const eventRouter = db => {
   /* POST request for a specific event id to submit response */
   router.post("/:id", (req, res) => {
     let user_id = 0;
+    console.log(`POST insert request on ${req.params.id}
+     with payload: ${JSON.stringify(req.body)}`);
+
+    const testPayload = [
+      {timeslot_id: 1008, attend: false},
+      {timeslot_id: 1009, attend: false}
+    ];
 
     // Get or set cookie for attendee
     authUser(req)
@@ -121,7 +128,7 @@ const eventRouter = db => {
         return db.query(queryEvent, paramEvent)
       })
       .then(resultEventQ => {
-        console.log('Checking if event in db:', resultQueryEvent.rows);
+        console.log('Checking if event in db:', resultEventQ.rows);
         // if no rows returned, event not in db and error
         if (!resultEventQ.rows.length) {
           console.log("Error: event not found in db")
@@ -132,21 +139,22 @@ const eventRouter = db => {
       .then(resultEventId => {
         console.log("Event id inserting into:", resultEventId);
         // Insert all attendances in attendances array into table
-        let queryAttends = `
+        let queryInsert = `
           INSERT INTO attendances (timeslot_id, attendee_id, attend)
           VALUES `; // insert multiple rows into attendances table
         let x = 1;  // index to insert parameterized start and end dates
-        let paramAttends = [];
-        for (attendance of req.body.attendances) {  // loop through timeslots to generate query
-          queryAttends += `
+        let paramInsert = [];
+        // for (attendance of req.body.attendances) {  // loop through timeslots to generate query
+        for (attendance of testPayload) {
+          queryInsert += `
             ($${x}, $${x+1}, $${x+2}),`;
-          x += 4;
-          paramAttends.push(attendance.timeslot_id, user_id, attendance.attend);
+          x += 3;
+          paramInsert.push(attendance.timeslot_id, user_id, attendance.attend);
         }
-        queryAttends = queryAttends.slice(0, -1) + ` RETURNING *; `;
+        queryInsert = queryInsert.slice(0, -1) + ` RETURNING *; `;
 
-        console.log("Attendance insert query:", queryAttends, paramAttends);
-        return db.query(queryAttends, paramAttends);
+        console.log("Attendance insert query:", queryInsert, paramInsert);
+        return db.query(queryInsert, paramInsert);
       })
       .then(resultInsertAttend => {
         console.log("Result of attendance insert:", resultInsertAttend.rows);
@@ -162,6 +170,13 @@ const eventRouter = db => {
   /* POST request for a specific event id to edit response */
   router.post("/edit/:id", (req, res) => {
     let user_id_from_email = 0;
+    console.log(`POST update request on ${req.params.id}
+      with payload: ${JSON.stringify(req.body)}`);
+
+    const testPayload = [
+      {attendance_id: 1329, attend: false},
+      {attendance_id: 1330, attend: false}
+    ];
 
     // Check if email in cookie is in db, and get user id of email
     db.query('SELECT id FROM users WHERE email = $1;', [req.session.user_id])
@@ -176,7 +191,7 @@ const eventRouter = db => {
         return db.query('SELECT id FROM events WHERE url = $1;', [req.params.id])
       })
       .then(resultEventQ => {
-        console.log('Checking if event in db:', resultQueryEvent.rows);
+        console.log('Checking if event in db:', resultEventQ.rows);
         // if no rows returned, event not in db and error
         if (!resultEventQ.rows.length) {
           console.log("Error: event not found in db")
@@ -186,24 +201,26 @@ const eventRouter = db => {
         return resultEventQ.rows[0].id;
       })
       .then(resultEventId => {
-    // Update
-        console.log("Event id inserting into:", resultEventId);
+    // Update attendance information provided for logged in user (cookie)
+        console.log("Event id updating on:", resultEventId);
         // Update all attendances in attendances array into table
-        let queryAttends = `
-          INSERT INTO attendances (timeslot_id, attendee_id, attend)
-          VALUES `; // insert multiple rows into attendances table
+        let queryUpdate = ''; // insert multiple rows into attendances table
         let x = 1;  // index to insert parameterized start and end dates
-        let paramAttends = [];
-        for (attendance of req.body.attendances) {  // loop through timeslots to generate query
-          queryAttends += `
-            ($${x}, $${x+1}, $${x+2}),`;
-          x += 4;
-          paramAttends.push(attendance.timeslot_id, user_id_from_email, attendance.attend);
-        }
-        queryAttends = queryAttends.slice(0, -1) + ` RETURNING *; `;
+        let paramUpdate = [];
 
-        console.log("Attendance insert query:", queryAttends, paramAttends);
-        return db.query(queryAttends, paramAttends);
+        // for (attendance of req.body.attendances) {  // loop through timeslots to generate query
+        for (attendance of testPayload) {
+          queryUpdate += `
+          UPDATE attendances
+          SET attend = $${x}
+          WHERE id = $${x+1} RETURNING *;
+          `;
+          x += 2;
+          paramUpdate.push(attendance.attend, attendance.attendance_id);
+        }
+
+        console.log("Attendance update query:", queryUpdate, paramUpdate);
+        return db.query(queryUpdate, paramUpdate);
       })
       .then(resultInsertAttend => {
         console.log("Result of attendance insert:", resultInsertAttend.rows);

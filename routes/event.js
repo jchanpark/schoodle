@@ -31,7 +31,6 @@ const eventRouter = db => {
     ; `;
 
     const queryParams = [uid];
-    // console.log("Query:", query, queryParams);
 
     db.query(query, queryParams)
       .then(result => {
@@ -204,31 +203,42 @@ const eventRouter = db => {
     // Update attendance information provided for logged in user (cookie)
         console.log("Event id updating on:", resultEventId);
         // Update all attendances in attendances array into table
-        let queryUpdate = ''; // insert multiple rows into attendances table
+        let queryUpdate = []; // update multiple rows in attendances table
         let x = 1;  // index to insert parameterized start and end dates
         let paramUpdate = [];
 
         // for (attendance of req.body.attendances) {  // loop through timeslots to generate query
         for (attendance of testPayload) {
-          queryUpdate += `
-          UPDATE attendances
-          SET attend = $${x}
-          WHERE id = $${x+1} RETURNING *;
-          `;
-          x += 2;
-          paramUpdate.push(attendance.attend, attendance.attendance_id);
+          // queryUpdate += `
+          // UPDATE attendances
+          // SET attend = $${x}
+          // WHERE id = $${x+1} RETURNING *;
+          // `;
+          // x += 2;
+          // paramUpdate.push(attendance.attend, attendance.attendance_id);
+
+          queryUpdate.push(
+            db.query(`UPDATE attendances
+            SET attend = $1
+            WHERE id = $2 RETURNING *`,
+            [attendance.attend, attendance.attendance_id])
+          );
+
         }
 
-        console.log("Attendance update query:", queryUpdate, paramUpdate);
-        return db.query(queryUpdate, paramUpdate);
+        // console.log("Attendance update query:", queryUpdate, paramUpdate);
+        // return db.query(queryUpdate, paramUpdate);
+        console.log("Attendance update queries:", JSON.stringify(queryUpdate));
+        return Promise.all(queryUpdate);
+
       })
-      .then(resultInsertAttend => {
-        console.log("Result of attendance insert:", resultInsertAttend.rows);
+      .then(resultUpdateAttend => {
+        console.log("Result of attendance update:", resultUpdateAttend.rows);
         // Return to event page
         return res.redirect(`/event/${req.params.id}`);
       })
       .catch(err => {
-        console.log("Error on post /event/:id INSERT - ", err.message);
+        console.log("Error on post /event/:id UPDATE - ", err.message);
         return res.redirect('../create/?urlErr=true'); // go back to index, with url error
       });
 

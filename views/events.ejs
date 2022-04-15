@@ -38,7 +38,28 @@
           <input  type="email" class="text" name="email" required placeholder="Enter email" style="Width: 250px"/>
       </div>
       <div class="form-section">
-        <label>I will be attending <input  type="checkbox" class="text" id="checkbox" name="check-box" style="Width: 250px"/> </label>
+        <table id="event-entries">
+          <tr>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Attending</th>
+          </tr>
+          <% for (let i = 0; i < result.length; i++) { %>
+            <tr>
+              <% let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' } %>
+
+              <% let startTime = new Date(result[i]['start_time']) %>
+              <% let startDate = startTime.toLocaleDateString("en-US", options) %>
+
+              <% let endTime = new Date(result[i]['end_time']) %>
+              <% let endDate = endTime.toLocaleDateString("en-US", options) %>
+
+              <td><%- startDate %></td>
+              <td><%- endDate %></td>
+              <td><input name="radio" type="radio"></td>
+            </tr>
+          <% } %>
+      </table>
     </div>
       <div class="continue-btn">
         <button class="button" type="submit" id="continue-btn2" >Continue</button>

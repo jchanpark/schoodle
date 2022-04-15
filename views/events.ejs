@@ -40,13 +40,25 @@
       <table class="fl-table">
           <thead>
           <tr>
-              <th>Email</th>
+              <th>Start-time</th>
+              <th>End-time</th>
               <th>Name</th>
-              <th>Response</th>
+              <th>Email</th>
+              <th>Attending</th>
 
           </tr>
           </thead>
           <tbody class="attendee-entry" >
+
+            <% for(let row of result) {%>
+              <tr align=center>
+                <td><%= new Date(row.start_time).getHours() %>:<%= new Date(row.start_time).getMinutes() %></td>
+                <td><%= new Date(row.end_time).getHours() %>:<%= new Date(row.end_time).getMinutes() %></td>
+                <td><%= row.name %></td>
+                <td><%= row.email %></td>
+                <td style="display:flex; justify-content: center;"><input type="checkbox" class="text" id="checkbox" style="Width: 50px" <%= row.attend ? "checked" : "" %> /></td>
+              </tr>
+            <%}%>
           <tbody>
       </table>
   </div>

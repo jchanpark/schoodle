@@ -19,14 +19,13 @@ const eventRouter = db => {
      returning an array of objects of SQL rows */
   router.get("/:id", (req, res) => {
     const uid = req.params.id;
-
     // Query DB for all information on the specified event
     const query = `
     SELECT *
-    FROM attendances
-      JOIN timeslots ON timeslot_id = timeslots.id
-      JOIN users ON attendee_id = users.id
-      JOIN events ON event_id = events.id
+    FROM events
+      LEFT OUTER JOIN timeslots ON event_id = events.id
+      LEFT OUTER JOIN attendances ON timeslot_id = timeslots.id
+      LEFT OUTER JOIN users ON attendee_id = users.id
     WHERE url = $1
     ; `;
 
@@ -35,13 +34,13 @@ const eventRouter = db => {
 
     db.query(query, queryParams)
       .then(result => {
-        console.log("GET result:\n===============================\n",result.rows);
+        console.log("GET result:\n===============================\n", result.rows);
         // Error check if anything went wrong
         if (!result.rows.length) {
           throw 'urlError';
         }
         // Process returned data from database into template variables
-        const templateVars = result.rows[0];
+        const templateVars = { result: result.rows };
         // Go to event-specific page
         return res.render('events', templateVars);
       })
@@ -53,60 +52,105 @@ const eventRouter = db => {
 
   });
 
+  /* Function to authenticate user, getting and/or setting cookie
+    to save user email, and adding user to database if not already in db.
+    This function returns an array [a user_id integer and a inDatabase boolean]. */
+  const authUser = function(req) {
+    return new Promise((resolve, reject) => {
+
+      // Get or set cookie to authenticate event
+      // Note: resets cookie to match provided email in form
+      const user_email = req.body.email;
+      req.session.user_id = user_email;
+
+      // Check if user in db; if not, create user and return false
+      let userExists = false;
+
+      // Query DB to check if user exists
+      const queryUserExists = `
+      SELECT * FROM users WHERE email = $1
+      ;`;
+      db.query(queryUserExists, [user_email])
+        .then(result => {
+          if (result.rows.length) {
+            userExists = true;
+          }
+          console.log("SELECT query result.rows:", result.rows, "User exists", userExists);
+          console.log("Request body", req.body);
+        // If user does not exist in db, insert new user and return new user id
+          if (!userExists) {
+            const queryUser = `
+            INSERT INTO users (name, email)
+            VALUES ($1, $2)
+            RETURNING *
+            ;`;
+            return db.query(queryUser, [req.body.name, req.body.email])
+              .then(resultInsert => {
+                console.log("INSERT users result.rows:", resultInsert.rows);
+                return resolve([resultInsert.rows[0].id, false]);
+              });
+          }
+        // If user exists in db, return found user id
+          console.log("Users found:", result.rows)
+          return resolve([result.rows[0].id, true]);
+        })
+        .catch(err => {
+          console.log("Error in validating user:", err.message);
+        })
+
+    });
+  };
+
   /* POST request for a specific event id to submit response */
   router.post("/:id", (req, res) => {
-    const uid = req.params.id;
+    let user_id = 0;
 
     // Get or set cookie for attendee
-    let user_id = req.session.user_id;
-    if (!user_id) {
-      user_id = req.body.email;
-      req.session.user_id = user_id;
-    }
+    authUser(req)
+      .then(resultUserId => {
+        user_id = resultUserId[0];
 
-    //Check if event in db
-    const queryEvent = `
-    SELECT *
-    FROM attendances
-      JOIN timeslots ON timeslot_id = timeslots.id
-      JOIN users ON attendee_id = users.id
-      JOIN events ON event_id = events.id
-    WHERE url = $1
-    ; `;
-    const paramEvent = [uid];
+        //Check if event in db
+        const queryEvent = `
+        SELECT * FROM events
+        WHERE url = $1
+        ; `;
+        const paramEvent = [req.params.id];
 
-    db.query(queryEvent, paramEvent)
-      .then(result => {
-        console.log('Checking if event in db:', result.rows);
+        return db.query(queryEvent, paramEvent)
+      })
+      .then(resultEventQ => {
+        console.log('Checking if event in db:', resultQueryEvent.rows);
         // if no rows returned, event not in db and error
-        if (!result.rows || !result.rows.length) {
+        if (!resultEventQ.rows.length) {
           console.log("Error: event not found in db")
           throw 'eventError';
         }
-        return result;
+        return resultEventQ.rows[0].id;
       })
-      .then(result => {
-        // Query DB to submit new attendance response
-        const queryAttendences = `
-        INSERT INTO attendances (timeslot_id, attendee_id, attend)
-        VALUES ($1, $2, $3)
-        RETURNING *
-        ;`;
-        // TODO??? may need to loop to insert multiple rows
-        // const query
-        console.log("req.body\n===============================\n", req.body);
-        const queryParams = [
-          req.body.timeslot_id,
-          req.body.attendee_id,
-          req.body.attend
-        ];
-        console.log("Query:", queryAttendences, queryParams);
-        return db.query(queryAttendences, queryParams);
+      .then(resultEventId => {
+        console.log("Event id inserting into:", resultEventId);
+        // Insert all attendances in attendances array into table
+        let queryAttends = `
+          INSERT INTO attendances (timeslot_id, attendee_id, attend)
+          VALUES `; // insert multiple rows into attendances table
+        let x = 1;  // index to insert parameterized start and end dates
+        let paramAttends = [];
+        for (attendance of req.body.attendances) {  // loop through timeslots to generate query
+          queryAttends += `
+            ($${x}, $${x+1}, $${x+2}),`;
+          x += 4;
+          paramAttends.push(attendance.timeslot_id, user_id, attendance.attend);
+        }
+        queryAttends = queryAttends.slice(0, -1) + ` RETURNING *; `;
+
+        console.log("Attendance insert query:", queryAttends, paramAttends);
+        return db.query(queryAttends, paramAttends);
       })
-      .then(result => {
-        console.log("Result of insert", result.rows);
+      .then(resultInsertAttend => {
+        console.log("Result of attendance insert:", resultInsertAttend.rows);
         // Return to event page
-        return res.redirect(`/event/${uid}`);
+        return res.redirect(`/event/${req.params.id}`);
       })
       .catch(err => {
         console.log("Error on post /event/:id INSERT - ", err.message);
@@ -118,51 +162,106 @@ const eventRouter = db => {
   router.post("/:id", (req, res) => {
     const uid = req.params.id;
 
+    let user_id = 0;
+
     // Get or set cookie for attendee
-    let user_id = req.session.user_id;
-    if (!user_id) {
-      user_id = req.body.email;
-      req.session.user_id = user_id;
-    }
+    authUser(req)
+      .then(resultUserId => {
+        // Error if user was not in database, since cannot be correct cookie
+        if (!resultUserId[1]) {
+          throw 'authErr';
+        }
+        user_id = resultUserId[0];
 
-    //Check if attendance_id is in database and user_id matches, if not error
-    const queryEventUser = `
-    SELECT *
-    FROM attendances
-      JOIN timeslots ON timeslot_id = timeslots.id
-      JOIN users ON attendee_id = users.id
-      JOIN events ON event_id = events.id
-    WHERE users.email = $1
-      AND attendances.id IN $2
-      AND events.url = $3; `;
-    const paramEventUser = [user_id, INSERT_ATTENDANCE_ARRAY, uid];
-    console.log("Auth query:", queryEventUser, paramEventUser);
+        //Check if event in db
+        const queryEvent = `
+        SELECT * FROM events
+        WHERE url = $1
+        ; `;
+        const paramEvent = [req.params.id];
 
-    db.query(queryEventUser, paramEventUser)
-      .then(result => {
-        console.log(result.rows);
-
-        // Query DB to update attendance response
-        const query = `
-        UPDATE attend = $1
-        FROM attendances
-        WHERE id = $2
-        RETURNING *
-        ;`; // may need to update WHERE query
-        const queryParams = [req.body.attend, req.body.attendances.id];
-
-        return db.query("Query:", query, queryParams);
+        return db.query(queryEvent, paramEvent)
       })
-      .then(result => {
-        console.log("Update response:", result.rows);
+      .then(resultEventQ => {
+        console.log('Checking if event in db:', resultQueryEvent.rows);
+        // if no rows returned, event not in db and error
+        if (!resultEventQ.rows.length) {
+          console.log("Error: event not found in db")
+          throw 'eventError';
+        }
+        return resultEventQ.rows[0].id;
+      })
+      .then(resultEventId => {
+        console.log("Event id inserting into:", resultEventId);
+        // Insert all attendances in attendances array into table
+        let queryAttends = `
+          INSERT INTO attendances (timeslot_id, attendee_id, attend)
+          VALUES `; // insert multiple rows into attendances table
+        let x = 1;  // index to insert parameterized start and end dates
+        let paramAttends = [];
+        for (attendance of req.body.attendances) {  // loop through timeslots to generate query
+          queryAttends += `
+            ($${x}, $${x+1}, $${x+2}),`;
+          x += 4;
+          paramAttends.push(attendance.timeslot_id, user_id, attendance.attend);
+        }
+        queryAttends = queryAttends.slice(0, -1) + ` RETURNING *; `;
 
+        console.log("Attendance insert query:", queryAttends, paramAttends);
+        return db.query(queryAttends, paramAttends);
+      })
+      .then(resultInsertAttend => {
+        console.log("Result of attendance insert:", resultInsertAttend.rows);
         // Return to event page
-        return result.redirect(`/event/${uid}`);
+        return res.redirect(`/event/${req.params.id}`);
       })
       .catch(err => {
-        console.log("Error on POST /event/:id UPDATE - ", err.message)
+        console.log("Error on post /event/:id INSERT - ", err.message);
         return res.redirect('../create/?urlErr=true'); // go back to index, with url error
       });
+
+
+
+
+      //   //Check if attendance_id is in database and user_id matches, if not error
+      //   const queryEventUser = `
+      //   SELECT *
+      //   FROM attendances
+      //     JOIN timeslots ON timeslot_id = timeslots.id
+      //     JOIN users ON attendee_id = users.id
+      //     JOIN events ON event_id = events.id
+      //   WHERE users.email = $1
+      //     AND attendances.id IN $2
+      //     AND events.url = $3; `;
+      //   const paramEventUser = [user_id, INSERT_ATTENDANCE_ARRAY, uid];
+      //   console.log("Auth query:", queryEventUser, paramEventUser);
+
+      //   return db.query(queryEventUser, paramEventUser)
+      // })
+      // .then(result => {
+      //   console.log(result.rows);
+
+      //   // Query DB to update attendance response
+      //   const query = `
+      //   UPDATE attend = $1
+      //   FROM attendances
+      //   WHERE id = $2
+      //   RETURNING *
+      //   ;`; // may need to update WHERE query
+      //   const queryParams = [req.body.attend, req.body.attendances.id];
+
+      //   return db.query("Query:", query, queryParams);
+      // })
+      // .then(result => {
+      //   console.log("Update response:", result.rows);
+
+      //   // Return to event page
+      //   return result.redirect(`/event/${uid}`);
+      // })
+      // .catch(err => {
+      //   console.log("Error on POST /event/:id UPDATE - ", err.message)
+      //   return res.redirect('../create/?urlErr=true'); // go back to index, with url error
+      // });
 
   });
 

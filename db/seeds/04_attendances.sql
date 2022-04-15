@@ -998,3 +998,10 @@ insert into attendances (timeslot_id, attendee_id, attend) values (78, 847, true
 insert into attendances (timeslot_id, attendee_id, attend) values (709, 905, true);
 insert into attendances (timeslot_id, attendee_id, attend) values (842, 631, false);
 insert into attendances (timeslot_id, attendee_id, attend) values (221, 301, false);
+insert into attendances (timeslot_id, attendee_id, attend) values (1001, 200, true);
+insert into attendances (timeslot_id, attendee_id, attend) values (1002, 201, false);
+insert into attendances (timeslot_id, attendee_id, attend) values (1003, 202, true);
+insert into attendances (timeslot_id, attendee_id, attend) values (1004, 203, false);
+insert into attendances (timeslot_id, attendee_id, attend) values (1005, 204, false);
+insert into attendances (timeslot_id, attendee_id, attend) values (1006, 205, true);
+insert into attendances (timeslot_id, attendee_id, attend) values (1007, 206, true);

@@ -158,6 +158,7 @@ const data =[
   "resposne" : "false"
 }]
 
+
 //
 const createAttendeeEntry = function(data) {
   const entry = $(`<tr>

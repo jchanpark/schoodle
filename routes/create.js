@@ -43,10 +43,11 @@ const createRouter = db => {
       ;`;
       db.query(queryUserExists, [user_email])
         .then(result => {
-          console.log("SELECT query result.rows:", result.rows);
           if (result.rows.length) {
             userExists = true;
           }
+          console.log("SELECT query result.rows:", result.rows, "User exists", userExists);
+          console.log("Request body", req.body);
         // If user does not exist in db, insert new user and return new user id
           if (!userExists) {
             const queryUser = `
@@ -76,20 +77,20 @@ const createRouter = db => {
      index.ejs posts here       */
   router.post('/', (req, res) => {
 
+    // Generate random string as unique id/url
+    const url = generateRandomString(30);
+
     // Get or create user, and then return result from authUser
     authUser(req)
       .then(resultUserId => {
         const user_id = resultUserId[0];
 
-        // Generate random string as unique id/url
-        const url = generateRandomString(30);
-
         // Insert new event into events table
         const query = `
-        INSERT INTO events (title, description, organizer_id, url)
-        VALUES (
-          $1, $2, $3, $4
-        ) RETURNING *; `;
+          INSERT INTO events (title, description, organizer_id, url)
+          VALUES (
+            $1, $2, $3, $4
+          ) RETURNING *; `;
         const queryParams = [
           req.body.title,
           req.body.description,
@@ -99,10 +100,31 @@ const createRouter = db => {
         console.log("Query:", query, queryParams);
 
         return db.query(query, queryParams)
-          .then(resultInsert => {
-            console.log('Event Created:', resultInsert.rows);
-            return res.redirect(`/event/${url}`);
-          });
+      })
+      .then(resultInsertEvent => {
+        console.log('Event Created:', resultInsertEvent.rows);
+        const eventID = resultInsertEvent.rows[0].id;
+        // Insert all timeslots in timeslots array into table
+        let queryTimeslots = `
+          INSERT INTO timeslots (event_id, start_time, end_time)
+          VALUES `; // insert multiple rows into timeslots table
+        let x = 2;  // index to insert parameterized start and end dates
+        let paramTimeslots = [eventID]; // init parameters with event id
+        for (timeslot of req.body.timeslots) {  // loop through timeslots to generate query
+          queryTimeslots += `
+            ($1, $${x}, $${x+1}),`;
+          x += 2;
+          paramTimeslots.push(timeslot.startDate, timeslot.endDate);
+        }
+        queryTimeslots = queryTimeslots.slice(0, -1) + ` RETURNING *; `;
+
+        console.log("Timeslot insert query:", queryTimeslots, paramTimeslots);
+        return db.query(queryTimeslots, paramTimeslots);
+      })
+      .then(resultInsertTime => {
+        console.log("Result of timeslot insert:", resultInsertTime.rows);
+
+        return res.redirect(`/event/${url}`);
       })
       .catch(err => {
         console.log(`Error in creating event:`, err.message);
@@ -117,16 +139,7 @@ const createRouter = db => {
   /*
   router.post('/:id', (req, res) => {
     const uid = req.params.id;
-    // Check cookie if it's the creator
-    let user_cookie = req.session.user_id;
-    // const queryCookie = `
-    // SELECT *
-    // FROM users
-    // JOIN events ON organizer_id = users.id
-    // WHERE users.email = $1 AND events.url = $2
-    // ; `;
-    // const paramCookie = [user_id, uid];
-    // db.query(queryCookie, paramCookie)
+
     // Get or create user, and then return result from authUser
     authUser(req)
       .then(resultAuth => {

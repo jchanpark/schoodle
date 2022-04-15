@@ -1,13 +1,9 @@
-
 // Client facing scripts here
 $(document).ready(function() {
   const max_number_of_event_dates = 5;
   let event_date_count = 0;
   let timeslots = [];
 
-  $(".date").datepicker({
-    minDate: '+1D'
-  });
 
 //nav bar create event button
 $(".nav-create-event").on("click", function () {
@@ -116,7 +112,8 @@ $("#date-entries").on("click",".minus-btn", function(e){ //user click on remove 
 
 
 $("#continue-btn2").on("click", function () {
-  test
+  // get form data $(#id-val).val()
+
   someFunction(data)
 });
 
@@ -125,6 +122,7 @@ $("#submitForm").submit(function(event) {
 
   let finaldataToPass = {
     title: $("#title").val(),
+    name: $("#name").val(),
     description: $("#description").val() ,
     email: $("#email").val() ,
     timeslots: timeslots
@@ -139,6 +137,8 @@ $("#submitForm").submit(function(event) {
     url: "/create",
     data: json_data,
     contentType: "application/json"
+  }).then(function(response) {
+    render(response);
   });
 
 });

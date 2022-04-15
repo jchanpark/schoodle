@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <title>Share your event</title>
+  <title>Event page</title>
 
   <link rel="stylesheet" href="/vendor/normalize-4.1.1.css" type="text/css" />
   <link rel="stylesheet" href="/vendor/border-box.css" type="text/css" />
@@ -11,23 +11,34 @@
 
   <script type="text/javascript" src="/vendor/jquery-3.0.0.js"></script>
   <script type="text/javascript" src="/scripts/app.js"></script>
-
+  <%- include('partials/_header') %>
   </head>
 
 <body>
+  <%- include('partials/_nav') %>
+<main class="container">
+  <section class="event">
+    <h1><%- result[0]['title'] %> </h1>
+    <div class="form-section">
+      <label>Description:</label>
+      <p class="text" name="description" id="description"><%- result[0]['description'] %></p>
+    </div>
+  </section>
+  <br>
+
   <form method="POST" action="/event/:id" class="submitForm">
-    <section class="new-event">
+  <section class="new-event">
       <h1>Confirm your attendence</h1>
         <div class="form-section">
           <label>Name:</label>
-          <textarea  placeholder="Your full name" class="text" ></textarea>
+          <textarea  placeholder="Your full name" name="name" class="text" ></textarea>
         </div>
         <div class="form-section">
           <label>Email:</label>
-          <input  type="email" class="text" required placeholder="Enter email" style="Width: 250px"/>
+          <input  type="email" class="text" name="email" required placeholder="Enter email" style="Width: 250px"/>
       </div>
       <div class="form-section">
-        <label>I will be attending <input  type="checkbox" class="text" id="checkbox" style="Width: 250px"/> </label>
+        <label>I will be attending <input  type="checkbox" class="text" id="checkbox" name="check-box" style="Width: 250px"/> </label>
     </div>
       <div class="continue-btn">
         <button class="button" type="submit" id="continue-btn2" >Continue</button>
@@ -50,6 +61,7 @@
           <tbody>
       </table>
   </div>
+</main>
 
 </body>
 

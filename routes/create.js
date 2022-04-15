@@ -138,63 +138,6 @@ const createRouter = db => {
 
   });
 
-  /* POST request for /create/:id
-     Editing an existing event
-     /event/:id posts here        */
-  /*
-  router.post('/:id', (req, res) => {
-    const uid = req.params.id;
-
-    // Get or create user, and then return result from authUser
-    authUser(req)
-      .then(resultAuth => {
-        // check if user cookie same as db
-        if (!resultAuth[1]) {
-          throw 'userError';
-        }
-        return resultAuth[0];
-      })
-      .then(resultUserId => {
-        console.log(resultUserId.rows);
-        if (resultUserId.rows.length !== 1) {
-          throw 'User not found';
-        }
-      })
-      .catch(err => {
-        console.log("Error in updating event:", err);
-        return res.redirect('/?eventErr=true'); // go back to index, with event error
-      })
-    // Update event in table with new properties
-      .then(result => {
-        const queryEventUpdate = `
-        UPDATE title = $2, description = $3
-        FROM events
-        WHERE url = $1; `;
-        const queryTimeslotUpdate = `
-        UPDATE start_time = $4, end_time = $5
-        FROM timeslots JOIN events ON event_id = events.id
-        WHERE events.url = $1; `;
-        // Populate with info from HTML form
-        const queryParams = [uid,
-          req.body.title,
-          req.body.description,
-          req.body.start_time,
-          req.body.end_time
-        ];
-        console.log("Query:", queryEventUpdate + queryTimeslotUpdate, queryParams);
-        return db.query(queryEventUpdate + queryTimeslotUpdate, queryParams);
-      })
-      .then(result => {
-        console.log(result.rows);
-        return res.redirect(`/event/${uid}`); // redirect to specific event URL if successful
-      })
-      .catch(err => {
-        console.log("Error in updating event:", err);
-        return res.redirect('/?eventErr=true'); // go back to index, with event error
-      });
-  });
-  */
-
   // Returns a random character string with upper, lower and numeric of user-defined length
   const generateRandomString = function(length) {
     return Buffer.from(Math.random().toString()).toString("base64").substr(10, length);

@@ -56,6 +56,7 @@ $(".add-btn").on("click", function () {
     alert("Please enter a date after today's date");
     return
   }
+<<<<<<< HEAD
 
   timeslots.push({
     startDate: startTimestamp,
@@ -63,6 +64,15 @@ $(".add-btn").on("click", function () {
   });
 
 
+=======
+
+  timeslots.push({
+    startDate: startTimestamp,
+    endDate: endTimestamp
+  });
+
+
+>>>>>>> consol-ui
   // date validations - dates/times must not be empty
   // start date must before the end date
   // use timestamps to do the comparisons

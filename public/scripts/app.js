@@ -1,3 +1,4 @@
+
 // Client facing scripts here
 $(document).ready(function() {
   const max_number_of_event_dates = 5;
@@ -27,6 +28,10 @@ $("#continue-btn").on("click", function () {
   else{
     $(".welcome").hide();
     $(".calendar").show();
+    // $('#title').attr('disabled', true);
+    // $('#description').attr('disabled', true);
+    // $('#name').attr('disabled', true);
+    // $('#email').attr('disabled', true);
   }
 })
 
@@ -54,6 +59,7 @@ $(".add-btn").on("click", function () {
     alert("Please enter a date after today's date");
     return
   }
+<<<<<<< HEAD
 
   timeslots.push({
     startDate: startTimestamp,
@@ -61,6 +67,15 @@ $(".add-btn").on("click", function () {
   });
 
 
+=======
+
+  timeslots.push({
+    startDate: startTimestamp,
+    endDate: endTimestamp
+  });
+
+
+>>>>>>> consol-ui
   // date validations - dates/times must not be empty
   // start date must before the end date
   // use timestamps to do the comparisons
@@ -94,6 +109,21 @@ const formatDate = function (inputDate) {
 
   return `${dateYear}-${dateMonth}-${dateDay} ${dateTime}`
 };
+<<<<<<< HEAD
+
+$("#date-entries").on("click",".minus-btn", function(e){ //user click on remove text
+
+  alert(`Allloo`)
+  e.preventDefault();
+  let tableRow = $(this).closest('tr');
+
+  var a = tableRow.children();
+  let timeslots = $("#timeslots").val();
+  // console.log(`${inspect(timeslots)}`)
+
+  alert(`${timeslots}`)
+  alert(`StartTime ${a[0].innerText} EndTime ${a[1].innerText}`)
+=======
 
 $("#date-entries").on("click",".minus-btn", function(e){ //user click on remove text
 
@@ -108,11 +138,17 @@ $("#date-entries").on("click",".minus-btn", function(e){ //user click on remove 
   alert(`${timeslots}`)
   alert(`StartTime ${a[0].innerText} EndTime ${a[1].innerText}`)
 
+>>>>>>> consol-ui
 
   tableRow.remove();
   event_date_count--;
 });
 
+  tableRow.remove();
+  event_date_count--;
+});
+
+<<<<<<< HEAD
 
 $("#continue-btn2").on("click", function () {
   test
@@ -139,11 +175,45 @@ $("#submitForm").submit(function(event) {
     url: "/create",
     data: json_data,
     contentType: "application/json"
+=======
+$("#continue-btn2").on("click", function () {
+  test
+  someFunction(data)
+});
+
+$("#submitForm").submit(function(event) {
+  event.preventDefault();
+  console.log(timeslots)
+
+  let finaldataToPass = {
+    title: $("#title").val(),
+    description: $("#description").val() ,
+    email: $("#email").val() ,
+    timeslots: timeslots
+  }
+  alert(`${finaldataToPass}`)
+  let json_data = JSON.stringify(finaldataToPass)
+  alert(`${json_data}`)
+  console.log(finaldataToPass)
+  console.log(json_data)
+  $.ajax({
+    method: "POST",
+    url: "/",
+    data: json_data,
+    dataType : "json"
+>>>>>>> consol-ui
   });
 
 });
 
 const createDateEntry = function(startTime, endTime) {
+<<<<<<< HEAD
+=======
+  // const entry = $(`<p>Date: <input type="text" class="date" >
+  // Start Time: <input type="time" id="start-time" min="05:00" max="24:00" required>
+  // End Time: <input type="time" id="end-time" min="05:00" max="24:00" required>
+  // <button class="minus-btn" type="submit"> <i class="fa-solid fa-minus"> </i></button> </p>`);
+>>>>>>> consol-ui
   const entry = $(`<tr>
   <td>${startTime}</td>
   <td>${endTime}</td>

@@ -80,7 +80,6 @@ const createRouter = db => {
     // Generate random string as unique id/url
     const url = generateRandomString(30);
 
-<<<<<<< HEAD
     // Get or create user, and then return result from authUser
     authUser(req)
       .then(resultUserId => {
@@ -125,27 +124,12 @@ const createRouter = db => {
       .then(resultInsertTime => {
         console.log("Result of timeslot insert:", resultInsertTime.rows);
 
-=======
-    // Insert new event into events table
-    const query = `
-    INSERT INTO events (title, description, user_id, timeslots, url)
-    VALUES (
-      $1, $2, $3, $4, ${url}
-    ) RETURNING *; `;
-    const queryParams = [
-      req.body.title,
-      req.body.description,
-      req.session.user_id,
-      req.body.timeslots
-    ];
-    // TODO: to populate with request props
-    console.log("Query:", query, queryParams);
-
-    db.query(query, queryParams)
-      .then(result => {
-        console.log('Event Created:', result.rows);
->>>>>>> consol-ui
-        return res.redirect(`/event/${url}`);
+        // return res.redirect(`/event/${url}`);
+        // Can't use res.redirect since we use ajax to POST
+        return {
+          "redirect":true,
+          "redir_url":`/event/${url}`
+        };
       })
       .catch(err => {
         console.log(`Error in creating event:`, err.message);

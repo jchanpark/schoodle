@@ -93,17 +93,10 @@ const formatDate = function (inputDate) {
   let dateMonth = date.slice(5, 7).join('');
   let dateYear = date.slice(0, 4).join('');
   let dateTime = date.slice(11, 16).join('');
-<<<<<<< HEAD
 
   return `${dateYear}-${dateMonth}-${dateDay} ${dateTime}`
 };
 
-=======
-
-  return `${dateYear}-${dateMonth}-${dateDay} ${dateTime}`
-};
-
->>>>>>> consol-ui
 $("#date-entries").on("click",".minus-btn", function(e){ //user click on remove text
 
   alert(`Allloo`)
@@ -124,19 +117,6 @@ $("#date-entries").on("click",".minus-btn", function(e){ //user click on remove 
 
 
 $("#continue-btn2").on("click", function () {
-<<<<<<< HEAD
-  // get form data $(#id-val).val()
-
-  someFunction(data)
-});
-
-$("#submitForm").submit(function(event) {
-  event.preventDefault();
-
-  let finaldataToPass = {
-    title: $("#title").val(),
-    name: $("#name").val(),
-=======
   test
   someFunction(data)
 });
@@ -147,32 +127,10 @@ $("#submitForm").submit(function(event) {
 
   let finaldataToPass = {
     title: $("#title").val(),
->>>>>>> consol-ui
     description: $("#description").val() ,
     email: $("#email").val() ,
     timeslots: timeslots
   }
-<<<<<<< HEAD
-
-  let json_data = JSON.stringify(finaldataToPass);
-  console.log(json_data)
-
-  alert(`${json_data}`)
-  $.ajax({
-    method: "POST",
-    url: "/create",
-    data: json_data,
-    contentType: "application/json"
-  })
-  .then(function(response) {
-    render(response);
-    // if (response.redirect) {
-    //   console.log("Redirect to URL:", response.redir_url);
-    //   window.open = response.redir_url;
-    //   // window.location.replace = response.redir_url;
-    //   // document.location.href = response.redir_url;
-    // }
-=======
   alert(`${finaldataToPass}`)
   let json_data = JSON.stringify(finaldataToPass)
   alert(`${json_data}`)
@@ -183,19 +141,15 @@ $("#submitForm").submit(function(event) {
     url: "/",
     data: json_data,
     dataType : "json"
->>>>>>> consol-ui
   });
 
 });
 
 const createDateEntry = function(startTime, endTime) {
-<<<<<<< HEAD
-=======
   // const entry = $(`<p>Date: <input type="text" class="date" >
   // Start Time: <input type="time" id="start-time" min="05:00" max="24:00" required>
   // End Time: <input type="time" id="end-time" min="05:00" max="24:00" required>
   // <button class="minus-btn" type="submit"> <i class="fa-solid fa-minus"> </i></button> </p>`);
->>>>>>> consol-ui
   const entry = $(`<tr>
   <td>${startTime}</td>
   <td>${endTime}</td>

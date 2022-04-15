@@ -52,12 +52,15 @@ app.use(cookieSession({
 // const widgetsRoutes = require("./routes/widgets");
 const eventRouter = require('./routes/event.js');
 const createRouter = require('./routes/create.js');
+const urlRouter = require('./routes/url_route.js');
 
 // Mount all resource routes
 // app.use('/api/create', createRouter(db));
 app.use('/create', createRouter(db));
 // app.use('/api/event', eventRouter(db));
 app.use('/event', eventRouter(db));
+// app.use('/api/url');
+app.use('/url', urlRouter(db));
 
 // Home page
 // Warning: avoid creating more routes in this file!

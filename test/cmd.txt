@@ -1,0 +1,92 @@
+GET home page:
+curl -i -X GET http://localhost:8080
+
+GET create event page
+curl -i -X GET http://localhost:8080/create
+
+GET event home (redirects to create)
+curl -i -X GET http://localhost:8080/event
+
+GET specific event details
+curl -i X GET http://localhost:8080/event/aFctBaYqxzTu
+curl -i X GET http://localhost:8080/event/bAfpGx3Dsxet
+
+http://localhost:8080/event/IyNTY2MjA3OTI=
+
+POST to create specific event
+curl -i X POST --data-urlencode "timeslot_id=164" --data-urlencode "attendee_id=123" --data-urlencode "attend=false" http://localhost:8080/event/aFctBaYqxzTu
+curl -i X POST --data-urlencode "timeslot_id=373" --data-urlencode "attendee_id=123" --data-urlencode "attend=false" http://localhost:8080/event/bAfpGx3Dsxet
+
+requires fields: title, description, email, name
+
+
+
+=================
+PSQL reset table:
+=================
+
+DROP SEQUENCE IF EXISTS events_id_seq CASCADE;
+\i db/schema/01_users.sql
+\i db/seeds/01_users.sql
+\i db/seeds/02_events_r2.sql
+\i db/seeds/03_timeslots.sql
+\i db/seeds/04_attendances.sql
+
+then change owners from vagrant to labber:
+ALTER TABLE users OWNER TO labber;
+ALTER TABLE events OWNER TO labber;
+ALTER TABLE timeslots OWNER TO labber;
+ALTER TABLE attendances OWNER TO labber;
+
+
+
+------
+Notes:
+------
+
+INSERT EVENT
+{
+  "title":"s",
+  "description":"s",
+  "email":"rider1993@gmail.com",
+  "timeslots":[
+    {
+      "startDate":"2022-04-14 11:32",
+      "endDate":"2022-04-15 11:32"
+    }
+  ]
+}:
+
+INSERT ATTEND
+{
+  "name": "nathan",
+  "email": "nathan@tsang",
+  "attendances": [
+    {
+      timeslot_id: 1008,
+      attend: true
+    },
+    {
+      timeslot_id: 1009,
+      attend: true
+    }
+  ]
+}
+
+UPDATE ATTEND
+{
+  "attendances": [
+    {
+      attendance_id: 50,
+      attend: false
+    },
+    {
+      attendance_id: 51,
+      attend: false
+    },
+    {
+      atttendance_id: 52,
+      attend: true
+    }
+  ]
+}

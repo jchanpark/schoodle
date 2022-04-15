@@ -94,17 +94,8 @@ const formatDate = function (inputDate) {
 
 $("#date-entries").on("click",".minus-btn", function(e){ //user click on remove text
 
-  alert(`Allloo`)
   e.preventDefault();
   let tableRow = $(this).closest('tr');
-
-  var a = tableRow.children();
-  let timeslots = $("#timeslots").val();
-  // console.log(`${inspect(timeslots)}`)
-
-  alert(`${timeslots}`)
-  alert(`StartTime ${a[0].innerText} EndTime ${a[1].innerText}`)
-
 
   tableRow.remove();
   event_date_count--;
@@ -136,11 +127,17 @@ $("#submitForm").submit(function(event) {
     method: "POST",
     url: "/create",
     data: json_data,
-    contentType: "application/json"
-  }).then(function(response) {
-    render(response);
-  });
+    contentType: "application/json",
 
+    success: function(result) {
+      console.log(result['url'])
+      $(".url").show();
+      $(".welcome").hide();
+      $(".calendar").hide();
+      $(".new-event").hide();
+      document.getElementById("event-url").innerHTML = `http://localhost:8080/event/${result['url']}`;
+    }
+  })
 });
 
 const createDateEntry = function(startTime, endTime) {
@@ -189,8 +186,6 @@ const loadEntries = function(data) {
 }
 
 loadEntries(data);
-
-
 
 
 

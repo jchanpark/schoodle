@@ -124,7 +124,10 @@ const createRouter = db => {
       .then(resultInsertTime => {
         console.log("Result of timeslot insert:", resultInsertTime.rows);
 
-        return res.redirect(`/event/${url}`);
+        // return res.redirect(`/event/${url}`);
+        // return url;
+
+        return res.send({url: `${url}`});
       })
       .catch(err => {
         console.log(`Error in creating event:`, err.message);

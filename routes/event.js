@@ -237,56 +237,7 @@ const eventRouter = db => {
         return res.redirect('../create/?urlErr=true'); // go back to index, with url error
       });
 
-
-
-
-      //   //Check if attendance_id is in database and user_id matches, if not error
-      //   const queryEventUser = `
-      //   SELECT *
-      //   FROM attendances
-      //     JOIN timeslots ON timeslot_id = timeslots.id
-      //     JOIN users ON attendee_id = users.id
-      //     JOIN events ON event_id = events.id
-      //   WHERE users.email = $1
-      //     AND attendances.id IN $2
-      //     AND events.url = $3; `;
-      //   const paramEventUser = [user_id, INSERT_ATTENDANCE_ARRAY, uid];
-      //   console.log("Auth query:", queryEventUser, paramEventUser);
-
-      //   return db.query(queryEventUser, paramEventUser)
-      // })
-      // .then(result => {
-      //   console.log(result.rows);
-
-      //   // Query DB to update attendance response
-      //   const query = `
-      //   UPDATE attend = $1
-      //   FROM attendances
-      //   WHERE id = $2
-      //   RETURNING *
-      //   ;`; // may need to update WHERE query
-      //   const queryParams = [req.body.attend, req.body.attendances.id];
-
-      //   return db.query("Query:", query, queryParams);
-      // })
-      // .then(result => {
-      //   console.log("Update response:", result.rows);
-
-      //   // Return to event page
-      //   return result.redirect(`/event/${uid}`);
-      // })
-      // .catch(err => {
-      //   console.log("Error on POST /event/:id UPDATE - ", err.message)
-      //   return res.redirect('../create/?urlErr=true'); // go back to index, with url error
-      // });
-
   });
-
-  // // Returns a random character string with upper, lower and numeric of user-defined length
-  // const generateRandomString = function(length) {
-  //   return Buffer.from(Math.random().toString()).toString("base64").substr(10, length);
-  // }
-
 
   /* Return router with defined routes */
   return router;

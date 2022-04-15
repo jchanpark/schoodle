@@ -135,6 +135,7 @@ const createRouter = db => {
         console.log(`Error in creating event:`, err.message);
         res.redirect('/?eventErr=true'); // go back to index, with event error
       });
+
   });
 
   // Returns a random character string with upper, lower and numeric of user-defined length

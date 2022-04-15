@@ -109,10 +109,10 @@ const eventRouter = db => {
     console.log(`POST insert request on ${req.params.id}
      with payload: ${JSON.stringify(req.body)}`);
 
-    const testPayload = [
-      {timeslot_id: 1008, attend: false},
-      {timeslot_id: 1009, attend: false}
-    ];
+    // const testPayload = [
+    //   {timeslot_id: 1008, attend: false},
+    //   {timeslot_id: 1009, attend: false}
+    // ];
 
     // Get or set cookie for attendee
     authUser(req)
@@ -145,8 +145,8 @@ const eventRouter = db => {
           VALUES `; // insert multiple rows into attendances table
         let x = 1;  // index to insert parameterized start and end dates
         let paramInsert = [];
-        // for (attendance of req.body.attendances) {  // loop through timeslots to generate query
-        for (attendance of testPayload) {
+        for (attendance of req.body.attendances) {  // loop through timeslots to generate query
+        // for (attendance of testPayload) {
           queryInsert += `
             ($${x}, $${x+1}, $${x+2}),`;
           x += 3;
@@ -174,10 +174,10 @@ const eventRouter = db => {
     console.log(`POST update request on ${req.params.id}
       with payload: ${JSON.stringify(req.body)}`);
 
-    const testPayload = [
-      {attendance_id: 1329, attend: false},
-      {attendance_id: 1330, attend: false}
-    ];
+    // const testPayload = [
+    //   {attendance_id: 1329, attend: false},
+    //   {attendance_id: 1330, attend: false}
+    // ];
 
     // Check if email in cookie is in db, and get user id of email
     db.query('SELECT id FROM users WHERE email = $1;', [req.session.user_id])
@@ -209,15 +209,8 @@ const eventRouter = db => {
         let x = 1;  // index to insert parameterized start and end dates
         let paramUpdate = [];
 
-        // for (attendance of req.body.attendances) {  // loop through timeslots to generate query
-        for (attendance of testPayload) {
-          // queryUpdate += `
-          // UPDATE attendances
-          // SET attend = $${x}
-          // WHERE id = $${x+1} RETURNING *;
-          // `;
-          // x += 2;
-          // paramUpdate.push(attendance.attend, attendance.attendance_id);
+        for (attendance of req.body.attendances) {  // loop through timeslots to generate query
+        // for (attendance of testPayload) {
 
           queryUpdate.push(
             db.query(`UPDATE attendances

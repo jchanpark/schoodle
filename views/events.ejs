@@ -46,7 +46,7 @@
           </tr>
           <% for (let i = 0; i < result.length; i++) { %>
             <tr>
-              <% let options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' } %>
+              <% let options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric'} %>
 
               <% let startTime = new Date(result[i]['start_time']) %>
               <% let startDate = startTime.toLocaleDateString("en-US", options) %>

@@ -3,7 +3,9 @@ $(document).ready(function() {
   const max_number_of_event_dates = 5;
   let event_date_count = 0;
   let timeslots = [];
-
+  $('#start-date').attr({
+    'max': new Date().toISOString().split("T")[0]
+  });
 
 //nav bar create event button
 $(".nav-create-event").on("click", function () {
@@ -117,22 +119,27 @@ $("#submitForm").submit(function(event) {
   let json_data = JSON.stringify(finaldataToPass);
   console.log(json_data)
 
-  alert(`${json_data}`)
-  $.ajax({
-    method: "POST",
-    url: "/create",
-    data: json_data,
-    contentType: "application/json",
+  if (timeslots.length) {
 
-    success: function(result) {
-      console.log(result['url'])
-      $(".url").show();
-      $(".welcome").hide();
-      $(".calendar").hide();
-      $(".new-event").hide();
-      document.getElementById("event-url").innerHTML = `http://localhost:8080/event/${result['url']}`;
-    }
-  })
+    // alert(`${json_data}`);
+    $.ajax({
+      method: "POST",
+      url: "/create",
+      data: json_data,
+      contentType: "application/json",
+
+      success: function(result) {
+        console.log(result['url'])
+        $(".url").show();
+        $(".welcome").hide();
+        $(".calendar").hide();
+        $(".new-event").hide();
+        document.getElementById("event-url").innerHTML = `http://localhost:8080/event/${result['url']}`;
+      }
+    });
+  } else {
+    alert(`Please enter a timeslot!`);
+  }
 });
 
 $("#submitAttend").submit(function(event) {
@@ -171,8 +178,9 @@ $("#submitAttend").submit(function(event) {
     contentType: "application/json",
 
     success: function(result) {
-      let data = {startTime: "test", endTime: "testing", name: $('[name="name"]').val(), email: $('[name="email"]').val(), response: "true" }
-      someFunction(data)
+      let data = {startTime: "test", endTime: "testing", name: $('[name="name"]').val(), email: $('[name="email"]').val(), response: "true" };
+      someFunction(data);
+      location.reload(true);
     }
   })
 
@@ -210,7 +218,6 @@ const someFunction = function(dataFromForm) {
 
 
 //function to load all entries from db
-//hardcoded data is being fed to this function
 //data should be retrived from the dartabase as an array of objects which will dynamically populate the attendee table
 const loadEntries = function(data) {
 

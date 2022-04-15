@@ -12,6 +12,7 @@ curl -i X GET http://localhost:8080/event/aFctBaYqxzTu
 curl -i X GET http://localhost:8080/event/bAfpGx3Dsxet
 
 http://localhost:8080/event/IyNTY2MjA3OTI=
+timeslots: 1005, 1006, 1038
 
 POST to create specific event
 curl -i X POST --data-urlencode "timeslot_id=164" --data-urlencode "attendee_id=123" --data-urlencode "attend=false" http://localhost:8080/event/aFctBaYqxzTu

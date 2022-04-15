@@ -22,7 +22,7 @@ const eventRouter = db => {
 
     // Query DB for all information on the specified event
     const query = `
-    SELECT attendances.id AS attend_id, *
+    SELECT attendances.id AS attend_id, timeslots.id AS time_id, *
     FROM events
       LEFT OUTER JOIN timeslots ON event_id = events.id
       LEFT OUTER JOIN attendances ON timeslot_id = timeslots.id
@@ -35,13 +35,30 @@ const eventRouter = db => {
     db.query(query, queryParams)
       .then(result => {
         // Error check if anything went wrong
-        console.log("GET result:\n===============================\n");
-        // console.log("GET result:\n===============================\n", result.rows);
+        // console.log("GET result:\n===============================\n");
+        console.log("GET result:\n===============================\n", result.rows);
         if (!result.rows.length) {
           throw 'urlError';
         }
-        // Process returned data from database into template variables
-        const templateVars = { result: result.rows, email: req.session.user_id };
+        // Process returned data from database into template variables\
+        const timeslot_list = {};
+        for (row of result.rows) {
+          timeslot_list[row.time_id] = {
+            start_time: row.start_time,
+            end_time: row.end_time
+          };
+          // timeslot_list.push({
+          //   timeslot_id: row.time_id,
+          //   start_time: row.start_time,
+          //   end_time: row.end_time
+          // });
+
+        }
+        const templateVars = {
+          result: result.rows,
+          timeslot_list: timeslot_list,
+          email: req.session.user_id
+        };
         console.log("Template", templateVars);
         // Go to event-specific page
         return res.render('events', templateVars);
@@ -109,11 +126,6 @@ const eventRouter = db => {
     console.log(`POST insert request on ${req.params.id}
      with payload: ${JSON.stringify(req.body)}`);
 
-    // const testPayload = [
-    //   {timeslot_id: 1008, attend: false},
-    //   {timeslot_id: 1009, attend: false}
-    // ];
-
     // Get or set cookie for attendee
     authUser(req)
       .then(resultUserId => {
@@ -125,6 +137,7 @@ const eventRouter = db => {
         WHERE url = $1
         ; `;
         const paramEvent = [req.params.id];
+        console.log("Find event in db", queryEvent, paramEvent);
 
         return db.query(queryEvent, paramEvent)
       })

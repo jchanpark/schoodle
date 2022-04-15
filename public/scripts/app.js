@@ -110,13 +110,6 @@ $("#date-entries").on("click",".minus-btn", function(e){ //user click on remove 
   event_date_count--;
 });
 
-
-$("#continue-btn2").on("click", function () {
-  // get form data $(#id-val).val()
-
-  someFunction(data)
-});
-
 $("#submitForm").submit(function(event) {
   event.preventDefault();
 
@@ -131,15 +124,62 @@ $("#submitForm").submit(function(event) {
   let json_data = JSON.stringify(finaldataToPass);
   console.log(json_data)
 
-  alert(`${json_data}`)
+  // alert(`${json_data}`)
   $.ajax({
     method: "POST",
     url: "/create",
     data: json_data,
     contentType: "application/json"
-  }).then(function(response) {
-    render(response);
+  })
+  .then(function(response) {
+    console.log(response);
+
+    // render(response);
+
+    if (response.redirect) {
+      window.location.replace(response.redir_url);
+    }
+
+    // $.get(response.redir_url);
   });
+
+});
+
+$("#submitAttend").submit(function(event) {
+  event.preventDefault();
+
+  const attendances = [];
+  const numTimeslots = $('#timeslot-entries').children().length;
+  for (let i = 0; i < numTimeslots; i++) {
+    let going = false;
+    if ($(`[slot=${i}]`).is(':checked')) {
+      going = true;
+    }
+    attendances.push({
+      "timeslot_id": $(`[slot=${i}]`).attr("time_id"),
+      "attend": going
+    });
+  }
+  console.log(attendances);
+
+  let dataForInsertAttend = {
+    name: $('[name="name"]').val(),
+    email: $('[name="email"]').val(),
+    attendances: attendances
+  }
+
+  let json_data = JSON.stringify(dataForInsertAttend);
+  const eventUrl = window.location.pathname;
+  console.log(json_data, eventUrl);
+
+
+  // alert(`${json_data}, and url is ${eventUrl}`);
+  $.ajax({
+    method: "POST",
+    url: eventUrl,
+    data: json_data,
+    contentType: "application/json"
+  })
 
 });
 
@@ -152,14 +192,6 @@ const createDateEntry = function(startTime, endTime) {
   return entry;
 };
 
-const data =[
-{
-  "email" : "test2@gmail.com",
-  "name" : "Rabhas2",
-  "resposne" : "false"
-}]
-
-//
 const createAttendeeEntry = function(data) {
   const entry = $(`<tr>
   <td>${data.email}</td>
@@ -187,6 +219,13 @@ const loadEntries = function(data) {
     $(".attendee-entry").append($entry)
   }
 }
+
+
+$("#sumbit-attend-btn").on("click", function () {
+  // get form data $(#id-val).val()
+  location.reload();
+  // someFunction(data)
+});
 
 loadEntries(data);
 

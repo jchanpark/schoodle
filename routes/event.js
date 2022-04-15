@@ -34,13 +34,15 @@ const eventRouter = db => {
 
     db.query(query, queryParams)
       .then(result => {
-        console.log("GET result:\n===============================\n", result.rows);
         // Error check if anything went wrong
+        console.log("GET result:\n===============================\n");
+        // console.log("GET result:\n===============================\n", result.rows);
         if (!result.rows.length) {
           throw 'urlError';
         }
         // Process returned data from database into template variables
-        const templateVars = { result: result.rows };
+        const templateVars = { result: result.rows, email: req.session.user_id };
+        console.log("Template", templateVars);
         // Go to event-specific page
         return res.render('events', templateVars);
       })

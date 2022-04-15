@@ -1,35 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-  <%- include('partials/_header') %>
+
     <title>Schoodle</title>
   </head>
 
   <body>
-  <%- include('partials/_nav') %>
-    <main style="margin: 1em;">
-      <h3>Poll Result</h3>
-      <table class="table" style="width: 100%;">
-        <thead>
-          <tr>
-            <th scope="col"><div>Time</div></th>
-            <th scope="col"><div>Name</div></th>
-            <th scope="col"><div>Email</div></th>
-            <th scope="col"><div>Attending</div></th>
-            <th scope="col"><div></div></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr align=center>
-            <td>4:00pm - 5:00pm</td>
-            <td>Jay Park</td>
-            <td>jpark@ymail.com</td>
-            <td><input  type="checkbox" class="text" id="checkbox" style="Width: 50px"/></td>
-            <td><form method="GET" action="/urls/<%= url %>"><button type="submit" class="btn btn-primary">edit</button></form></td>
-          </tr>
-        </tbody>
-      </table>
-    </main>
+
+
+    <div class="new-event">
+      <h1 class="display-4 text-center">Thank you for voting!</h1>
+      <hr class="my-4">
 
       <!-- View results and modify buttons -->
       <div class="form-group col-md-4 mt-4 offset-md-4">

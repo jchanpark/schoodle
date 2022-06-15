@@ -13,6 +13,14 @@ Like Doodle but worse.
 
 ## Screenshots
 
+![Home page](https://github.com/nathan-ts/schoodle/blob/main/docs/home.jpg)
+![Create new event](https://github.com/nathan-ts/schoodle/blob/main/docs/create-event.jpg)
+![Error: fields not filled](https://github.com/nathan-ts/schoodle/blob/main/docs/error.jpg)
+![Select timeslots](https://github.com/nathan-ts/schoodle/blob/main/docs/timeslot-picker.jpg)
+![Shareable link](https://github.com/nathan-ts/schoodle/blob/main/docs/share-link.jpg)
+![Confirm your attendance](https://github.com/nathan-ts/schoodle/blob/main/docs/confirm-attendance.jpg)
+![Show attendees](https://github.com/nathan-ts/schoodle/blob/main/docs/attending.jpg)
+
 
 ## Tips
 

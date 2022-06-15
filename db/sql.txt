@@ -1,0 +1,6 @@
+DROP SEQUENCE IF EXISTS events_id_seq CASCADE;
+\i db/schema/01_users.sql
+\i db/seeds/01_users.sql
+\i db/seeds/02_events.sql
+\i db/seeds/03_timeslots.sql
+\i db/seeds/04_attendances.sql

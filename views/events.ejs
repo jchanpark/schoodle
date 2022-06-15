@@ -18,10 +18,10 @@
   <%- include('partials/_nav') %>
 <main class="container">
   <section class="event">
-    <h1><%- result[0]['title'] %> </h1>
+    <h1 id="event-title"><%- result[0]['title'] %> </h1>
     <div class="form-section">
       <label>Description:</label>
-      <p class="text" name="description" id="description"><%- result[0]['description'] %></p>
+      <p class="text" name="description" id="event-description"><%- result[0]['description'] %></p>
     </div>
   </section>
   <br>

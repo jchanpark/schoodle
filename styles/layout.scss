@@ -11,6 +11,10 @@ body header {
   top: 0;
 }
 
+#schoodle-logo {
+  height: 2em,
+}
+
 // Create page
 
 .navbar-left .navbar-name {
@@ -21,17 +25,12 @@ body header {
   padding-left: 5px;
 }
 
-.schoodle-logo {
-  height: 5em,
-}
-
 .fa-calendar-days{
   color: white;
   font-size: 1.8em;
 }
 
 .fa-plus{
-  color: white;
   font-size: 1.25em;
   padding: 5px;
 }
@@ -58,18 +57,19 @@ body header {
 
 .new-event {
   border-radius: 10px;
-  background-color: #8c8fb4;
+  background-color: #7285A4;
   padding: 40px;
   padding-left: 70px;
   padding-right: 70px;
   box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  font-family: 'Quicksand', sans-serif;
 }
 
 .new-event .text {
   border: none;
   resize: none;
   outline: none;
-  background-color: #d5c9e3;
+  background-color: #CED5E2;
 }
 
 .new-event .submitForm{
@@ -87,20 +87,27 @@ body header {
   font-family: 'Quicksand', sans-serif;
   width: 10%;
   background-color:  rgb(223, 236, 245);
-  border-radius: 10px;
+  border-radius: 6px;
 }
 
 .button:hover {
   color: white;
   font-family: 'Quicksand', sans-serif;
   width: 10%;
-  background-color:#598392;
+  background-color:#9DABC3;
   border-radius: 6px;
 }
 
-.continue-btn{
+.continue-btn {
   display: flex;
   justify-content: flex-end;
+}
+
+#continue-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
 }
 
 .form-section{
@@ -114,7 +121,7 @@ body header {
 .calendar {
   font-family: 'Quicksand', sans-serif;
   border-radius: 10px;
-  background-color: white;
+  background-color: #7285A4;
   padding: 40px;
   padding-left: 70px;
   padding-right: 70px;
@@ -122,7 +129,11 @@ body header {
 }
 
 .add-date-btn .add-btn {
-  width: 5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5em;
+  height: 2.5em;
   background-color:  rgb(223, 236, 245);
   border-radius: 10px;
   color: black;
@@ -144,18 +155,40 @@ body header {
   justify-content: center;
 }
 
-//attendence form
+#complete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 15px;
+  padding-right: 15px;
+  font-weight: bold;
+}
+
+// Event URL
+
+.url {
+  font-family: 'Quicksand', sans-serif;
+  color: white;
+}
+
+// Attendence Form
 #checkbox {
   display: flex;
   justify-content:flex-end;
 }
 
-#description {
-  color: #ffffff;
+.event {
+  // background-color: #CED5E2;
+  // opacity: 0.5;
+  background-color: #7285A4;
+  font-family: 'Quicksand', sans-serif;
+  border-radius: 10px;
+  padding-left: 1.75em;
+  padding-right: 1em;
+  padding-top: 0.1em;
 }
 
-//table css
-
+//Table CSS
 
 *{
   box-sizing: border-box;

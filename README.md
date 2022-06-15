@@ -19,7 +19,7 @@ Like Doodle but worse.
 ![Select timeslots](https://github.com/nathan-ts/schoodle/blob/main/docs/timeslot-picker.jpg)
 ![Shareable link](https://github.com/nathan-ts/schoodle/blob/main/docs/share-link.jpg)
 ![Confirm your attendance](https://github.com/nathan-ts/schoodle/blob/main/docs/confirm-attendance.jpg)
-![Show attendees](https://github.com/nathan-ts/schoodle/blob/main/docs/attending.jpg)
+![Show attendees](https://github.com/nathan-ts/schoodle/blob/main/docs/attendees.jpg)
 
 
 ## Tips

@@ -14,36 +14,36 @@
   <section class="welcome" >
     <h1>Welcome to Schoodle!</h1>
 
-    <h2>Where all your scheduling needs are met</h2>
+    <h2>Where all your scheduling needs are met.</h2>
   </section>
 
   <form method="POST" action="/create" class="submitForm" id="submitForm">
     <section class="new-event" hidden="true">
       <h1>Create an Event</h1>
-        <div class="form-section">
-          <label>Title:</label>
-          <textarea placeholder="Event Title" class="text" name="title" id="title"></textarea>
-        </div>
-        <div class="form-section">
-          <label>Description:</label>
-          <textarea placeholder="Write a short description" class="text" name="description" id="description"></textarea>
-        </div>
-        <div class="form-section">
-          <label>Name:</label>
-          <textarea placeholder="Your full name" class="text" id="name" name="name"></textarea>
-        </div>
-        <div class="form-section">
-          <label>Email:</label>
-          <input type="email" id="email" name="email" class="text" required placeholder="Enter email" style="Width: 250px"/>
-        </div>
-        <div>
-          <textarea class="text"name="timeslots" id="timeslots" hidden="true" >      </textarea>
-        </div>
+      <div class="form-section">
+        <label>Title:</label>
+        <textarea placeholder="Event Title" class="text" name="title" id="title"></textarea>
+      </div>
+      <div class="form-section">
+        <label>Description:</label>
+        <textarea placeholder="Write a short description" class="text" name="description" id="description"></textarea>
+      </div>
+      <div class="form-section">
+        <label>Name:</label>
+        <textarea placeholder="Your full name" class="text" id="name" name="name"></textarea>
+      </div>
+      <div class="form-section">
+        <label>Email:</label>
+        <input type="email" id="email" name="email" class="text" required placeholder="Enter email" style="Width: 250px"/>
+      </div>
+      <div>
+        <textarea class="text"name="timeslots" id="timeslots" hidden="true" >      </textarea>
+      </div>
 
-        <div class="continue-btn">
-          <button class="button" type="button" id="continue-btn" >Continue</button>
-          <!-- Routes to GET timeslots -> carry over data from this form via cookies -->
-        </div>
+      <div class="continue-btn">
+        <button class="button" type="button" id="continue-btn" >Continue</button>
+        <!-- Routes to GET timeslots -> carry over data from this form via cookies -->
+      </div>
     </section>
     <br>
     <section class="calendar" hidden="true">

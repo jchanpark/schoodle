@@ -9,9 +9,9 @@ $(document).ready(function() {
 
 //nav bar create event button
 $(".nav-create-event").on("click", function () {
-  $(".welcome").hide();
+  $(".welcome").toggle();
   $(".calendar").hide();
-  $(".new-event").show();
+  $(".new-event").toggle();
 })
 
 //continue button on the create event page

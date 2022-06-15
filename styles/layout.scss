@@ -1,15 +1,17 @@
-// See: https://sass-lang.com/
+// Header
 
 body header {
   display: flex;
   height: 120px;
   width: 100%;
-  background-color: #124559;
+  background-color: #2D466D;
   padding: 1.5em;
   justify-content:space-between;
   position: fixed;
   top: 0;
 }
+
+// Create page
 
 .navbar-left .navbar-name {
   font-family:'Grape Nuts', cursive;
@@ -44,23 +46,19 @@ body header {
   font-size: 1.28em;
   font-family: 'Quicksand', sans-serif;
   color: white;
-  background-color:#598392;
+  background-color:#172F54;
   border-radius: 6px;
   border: none;
   padding-right: 0.75em;
 }
 
 .navbar-right .nav-create-event:hover {
-  font-size: 1.28em;
-  font-family: 'Quicksand', sans-serif;
-  color: white;
-  background-color: #598392;
-  border-radius: 10px;
+  background-color: #4C6489;
 }
 
 .new-event {
   border-radius: 10px;
-  background-color: white;
+  background-color: #8c8fb4;
   padding: 40px;
   padding-left: 70px;
   padding-right: 70px;
@@ -71,7 +69,7 @@ body header {
   border: none;
   resize: none;
   outline: none;
-  background-color: rgb(223, 236, 245);
+  background-color: #d5c9e3;
 }
 
 .new-event .submitForm{
@@ -80,7 +78,7 @@ body header {
 }
 
 .welcome {
-  font-family:'Grape Nuts', cursive;
+  font-family:'Grape Nuts';
   font-size: 1.5em;
   color: white;
 }
@@ -97,7 +95,7 @@ body header {
   font-family: 'Quicksand', sans-serif;
   width: 10%;
   background-color:#598392;
-  border-radius: 10px;
+  border-radius: 6px;
 }
 
 .continue-btn{
@@ -150,6 +148,10 @@ body header {
 #checkbox {
   display: flex;
   justify-content:flex-end;
+}
+
+#description {
+  color: #ffffff;
 }
 
 //table css

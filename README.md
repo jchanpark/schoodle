@@ -7,9 +7,10 @@ Like Doodle but worse.
 
 1. Install dependencies: `npm i`
 2. Fix to binaries for sass: `npm rebuild node-sass`
-3. Reset database: `npm run db:reset`
-4. Run the server: `npm run local`
-5. Visit `http://localhost:8080/`
+3. Update PSQL: see commands in [db/sql.txt](/db/sql.txt)
+4. Reset database: `npm run db:reset`
+5. Run the server: `npm run local`
+6. Visit `http://localhost:8080/`
 
 ## Screenshots
 

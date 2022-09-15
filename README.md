@@ -3,6 +3,8 @@ Schoodle, a scheduling app.
 
 Like Doodle but worse. 
 
+Built by [Jay Park](https://github.com/jchanpark), [Nathan Tsang](https://github.com/nathan-ts), and [Rabhas Vashisht](https://github.com/Rabhas01). 
+
 ## Getting Started
 
 1. Install dependencies: `npm i`

@@ -1,7 +1,5 @@
-Schoodle, a scheduling app. 
-=========
-
-Like Doodle but worse. 
+# Schoodle?
+Schoodle is a meeting coordination web application. You can suggest meeting time and 
 
 Built by [Jay Park](https://github.com/jchanpark), [Nathan Tsang](https://github.com/nathan-ts), and [Rabhas Vashisht](https://github.com/Rabhas01). 
 
@@ -23,9 +21,6 @@ Built by [Jay Park](https://github.com/jchanpark), [Nathan Tsang](https://github
 ![Shareable link](https://github.com/nathan-ts/schoodle/blob/main/docs/share-link.jpg)
 ![Confirm your attendance](https://github.com/nathan-ts/schoodle/blob/main/docs/confirm-attendance.jpg)
 ![Show attendees](https://github.com/nathan-ts/schoodle/blob/main/docs/attendees.jpg)
-
-
-## Tips
 
 
 ## Dependencies
